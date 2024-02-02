@@ -1,0 +1,3 @@
+#MidAmerican
+
+rm(list = ls())
