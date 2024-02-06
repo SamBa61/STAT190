@@ -3,7 +3,7 @@ import requests
 import csv
 from bs4 import BeautifulSoup as bs
 
-# selected 2024
+# selected 2024 - writes only first table of link
 url = "https://transmission.bpa.gov/Business/Operations/Outages/OutagesCY2024.htm"
 page = requests.get(url)
 data = page.content
