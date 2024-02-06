@@ -11,7 +11,7 @@ data = page.content
 parsed_data = bs(data, "html.parser")
 
 # convert into csv file - Open CSV file in write mode
-with open('/Users/sambasala/Desktop/STAT 190/Data Capstone/outages_2024.csv', mode='w', newline='') as csv_file:
+with open('/Users/sambasala/Desktop/STAT 190/DataCapstone/outages_2024.csv', mode='w', newline='') as csv_file:
     writer = csv.writer(csv_file)
 
     # Write headers
