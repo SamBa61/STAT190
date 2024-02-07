@@ -11,8 +11,7 @@ def web_scrape(url, filepath, headers_list, table_separator, rows_separator, col
   # create for loop here, rows will need to be appended to created dataset
   # 26 years on website
   
-  for i in range(1, 26):
-    
+  for i in range(1, 26):]
   
   page = requests.get(url)
   data = page.content
