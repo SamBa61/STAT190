@@ -52,3 +52,13 @@ for (year in 2018:2024) {
 Final_CustServiceInterrupt <- data.table::rbindlist(CustServiceInterrupt, fill = T)
 Final_TransmissionInterrupt <- data.table::rbindlist(TransmissionInterrupt, fill = T)
 Final_TransformerInterrupt <- data.table::rbindlist(TransformerInterrupt, fill = T)
+
+colnames(Final_CustServiceInterrupt) <- c("Out_Datetime", "In_Datetime", "Infrastructure_Name", "Voltage_kV", "Duration_min",
+                                          "Outage_Type", "Field_Cause", "Responsible_System",
+                                          "Megawatts_Interrupted", "Operations_Management_District", "OutageID")
+colnames(Final_TransmissionInterrupt) <- c("Out_Datetime", "In_Datetime", "Infrastructure_Name", "Voltage_kV", "Line_Type", "Gen_Flag", "Length_miles",
+                                                 "Duration_min", "Outage_Type", "Field_Cause", "Responsible_System", "Operations_Management_District",
+                                                 "Transmission_Owner_NERC_TADS", "Outage_ID")
+colnames(Final_TransformerInterrupt) <- c("Out_Datetime", "In_Datetime", "Infrastructure_Name", "High_Voltage_kV", "Low_Voltage_kV",
+                                                "Duration_min", "Outage_Type", "Field_Cause", "Responsible_System", "Operations_Management_District",
+                                                "Transmission_Owner_NERC_TADS", "Outage_ID")
