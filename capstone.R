@@ -6,7 +6,7 @@ library(rvest)
 library(dplyr)
 
 # variables and lists
-start_year <- 1999
+start_year <- 2018
 end_year <- 2024
 
 CustServiceInterrupt <- list()
@@ -53,13 +53,15 @@ Final_CustServiceInterrupt <- data.table::rbindlist(CustServiceInterrupt, fill =
 Final_TransmissionInterrupt_Final <- data.table::rbindlist(TransmissionInterrupt, fill = T)
 Final_TransformerInterrupt_Final <- data.table::rbindlist(TransformerInterrupt, fill = T)
 
+colnames(Final_CustServiceInterrupt) <- c("OutDatetime",	"InDatetime",	"Name",	"Voltage(kV)", "Duration(min)",
+                                          "OutageType",	"FieldCause",	"ResponsibleSystem",
+                                          "MWIntrpt",	"Operations&ManagementDistrict",	"OutageID")
+colnames(Final_TransmissionInterrupt_Final) <- c("OutDatetime",	"InDatetime",	"Name",	"Voltage(kV)",	"LineType",	"GenFlag", "Length(mi)",
+                                                 "Duration(min)",	"OutageType", "FieldCause",	"ResponsibleSystem", "Operations&ManagementDistrict",
+                                                 "TransmissionOwnerNERCTADS",	"OutageID")
+colnames(Final_TransformerInterrupt_Final) <- c("OutDatetime",	"InDatetime",	"Name",	"HighVoltage(kV)", "LowVoltage(kV)",
+                                                "Duration(min)", "OutageType", "FieldCause", "ResponsibleSystem",	"Operations&ManagementDistrict",
+                                                "TransmissionOwnerNERCTADS", "OutageID")
 
 
 
-
-
-
-
-
-# load in dataset
-outages_2024 <- read.csv("outages_2024.csv", stringsAsFactors = FALSE)
