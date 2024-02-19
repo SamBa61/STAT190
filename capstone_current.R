@@ -9,7 +9,7 @@ library(ggplot2)
 #####################################################################################################
 
 # loading in data from 2018-2024 (keeps things current)
-# how many years back should we go?
+# go back further for weather data
 
 CustServiceInterrupt <- list()
 TransmissionInterrupt <- list()
@@ -86,6 +86,8 @@ table(Final_CustServiceInterrupt$In_Datetime)
 # there are 104 nulls!?
 # in datetimes are characters and some are blank
 
+# THIS IS SOMETHING TO ASK FOLLETT ABOUT
+
 # Final_CustServiceInterrupt$Infrastructure_Name
 unique(Final_CustServiceInterrupt$Infrastructure_Name)
 # break apart infrastructure name - town: utility company, voltage, type of feeder
@@ -98,7 +100,7 @@ hist(Final_CustServiceInterrupt$Voltage_kV)
 unique(Final_CustServiceInterrupt$Duration_min) 
 table(Final_CustServiceInterrupt$Duration_min)
 # duration is character because of "still out"
-# there are also 0's
+# there are also 0 - these are automatic outage types
 # look at histogram of duration (once data type is changed)
 
 # Final_CustServiceInterrupt$Outage_Type
@@ -164,7 +166,7 @@ table(Final_TransmissionInterrupt$Line_Type)
 # Final_TransmissionInterrupt$Gen_Flag
 unique(Final_TransmissionInterrupt$Gen_Flag) 
 table(Final_TransmissionInterrupt$Gen_Flag)
-# 14694 null values - what does this mean?
+# 14694 null values - what does Gen_Flag mean?
 
 # Final_TransmissionInterrupt$Length_miles
 unique(Final_TransmissionInterrupt$Length_miles) 
@@ -262,4 +264,6 @@ table(Final_TransformerInterrupt$Operations_Management_District)
 unique(Final_TransformerInterrupt$Transmission_Owner_NERC_TADS)
 table(Final_TransformerInterrupt$Transmission_Owner_NERC_TADS)
 # there are 16 null values to change - dump into BPAT?
+
+#####################################################################################################
 
