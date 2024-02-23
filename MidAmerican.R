@@ -67,8 +67,6 @@ colnames(Final_TransformerInterrupt) <- c("Out_Datetime", "In_Datetime", "Infras
 
 
 
-summary(Final_CustServiceInterrupt)
-
 #separate town
 Final_CustServiceInterrupt <- Final_CustServiceInterrupt %>%
   separate(Infrastructure_Name, into = c("Town", "System"), sep = ": ", extra = "merge")
@@ -77,20 +75,84 @@ Final_CustServiceInterrupt <- Final_CustServiceInterrupt %>%
 Final_CustServiceInterrupt <- Final_CustServiceInterrupt[, -which(names(Final_CustServiceInterrupt) == "Megawatts_Interrupted")]
 
 
+# Filter out rows where Duration_min is "still out"
+Final_CustServiceInterrupt <- Final_CustServiceInterrupt %>%
+  filter(Duration_min != "still out")
+
+# Convert Duration_min to numeric
+Final_CustServiceInterrupt$Duration_min <- as.numeric(Final_CustServiceInterrupt$Duration_min)
+
+
+summary(Final_CustServiceInterrupt)
+
+
+#if you wanted a smaller graph take out low obersvation counts
+#Final_CustServiceInterrupt <- Final_CustServiceInterrupt %>%
+  #filter(Field_Cause != "Environmental")
+
+
+
+
+####VISUALIZATIONS############
+
+#count of outages in each district
+table(Final_CustServiceInterrupt$Operations_Management_District)
+
+#how many of each voltage
 ggplot(data = Final_CustServiceInterrupt) +
   geom_histogram(aes(x = Voltage_kV))
 
 
-#Looking at Field Cause within certian districts
-
-ggplot(data = Final_CustServiceInterrupt[Final_CustServiceInterrupt$Operations_Management_District=="TRI", ]) +
-  geom_bar(aes(x = Field_Cause)) +
-  coord_flip()
+#Looking at Field Cause within certain districts TOP 4 districts by observations
 
 ggplot(data = Final_CustServiceInterrupt[Final_CustServiceInterrupt$Operations_Management_District=="SPK", ]) +
   geom_bar(aes(x = Field_Cause)) +
+  geom_text(aes(x = Field_Cause, y = ..count.., label = ..count..), stat = "count", size = 3, vjust = -0.5) +
+  ggtitle("District SPK") +
   coord_flip()
 
-#count of outages in each district
-table(Final_CustServiceInterrupt$Operations_Management_District)
+ggplot(data = Final_CustServiceInterrupt[Final_CustServiceInterrupt$Operations_Management_District=="TRI", ]) +
+  geom_bar(aes(x = Field_Cause)) +
+  geom_text(aes(x = Field_Cause, y = ..count.., label = ..count..), stat = "count", size = 3, vjust = -0.5) +
+  ggtitle("District TRI") +
+  coord_flip()
+
+ggplot(data = Final_CustServiceInterrupt[Final_CustServiceInterrupt$Operations_Management_District=="EUG", ]) +
+  geom_bar(aes(x = Field_Cause)) +
+  geom_text(aes(x = Field_Cause, y = ..count.., label = ..count..), stat = "count", size = 3, vjust = -0.5) +
+  ggtitle("District EUG") +
+  coord_flip()
+  
+ggplot(data = Final_CustServiceInterrupt[Final_CustServiceInterrupt$Operations_Management_District=="KAL", ]) +
+  geom_bar(aes(x = Field_Cause)) +
+  geom_text(aes(x = Field_Cause, y = ..count.., label = ..count..), stat = "count", size = 3, vjust = -0.5) +
+  ggtitle("District KAL") +
+  coord_flip()
+
+
+
+
+
+#VERY UNHELPFUL TRYING TO FIND DURATION_MIN FOR FIELD CAUSE---------------------------------------
+
+# Filter data for District SPK
+SPK_data <- Final_CustServiceInterrupt[Final_CustServiceInterrupt$Operations_Management_District == "SPK", ]
+
+# Summarize the data
+summarized_data <- SPK_data %>%
+  group_by(Field_Cause) %>%
+  summarize(total_duration = mean(Duration_min)) %>% #can change to sum() but mean tells a better story
+  top_n(25, total_duration)  # Keep only the top 5 Field_Cause categories
+
+# Plot the summarized data
+ggplot(data = summarized_data) +
+  geom_bar(aes(x = Field_Cause, y = total_duration), stat = "identity") +
+  geom_text(aes(x = Field_Cause, y = total_duration, label = total_duration), size = 3, vjust = -0.5) +
+  ggtitle("Top 5 Field Causes by Duration in District SPK") +
+  coord_flip()
+  
+########################################################################
+
+
+
 
