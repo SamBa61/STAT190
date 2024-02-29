@@ -47,5 +47,7 @@ aggregate_demand <- aggregate(cbind(Demand_MW, Net_Generation_MW, Total_Intercha
 str(aggregate_demand)
 summary(aggregate_demand)
 
+# create graphs for each region
+
 
 
