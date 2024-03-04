@@ -26,6 +26,7 @@ Trello: https://trello.com/invite/datacapstone3/ATTIaec2913b7e5c31b0741bf3e3937f
     3) data cleaning: handling NAs, aggregating to days, and creating categories for demand
     4) create visualizations with clean data
     5) create predictive model for demand
+ - DIBA = directly interconnected balancing authority
 
 # Wildfire
 
