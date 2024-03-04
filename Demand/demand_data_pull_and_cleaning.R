@@ -6,7 +6,6 @@ library(dplyr)
 library(readr)
 
 # read in data
-# 2015-2019 6-month data
 # large .xlsx for region
 # API pull
 
