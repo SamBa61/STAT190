@@ -5,15 +5,17 @@ rm(list = ls())
 library(dplyr)
 library(readr)
 
-# read in the small demand datasets
-# demand_by_reg <- read.csv("elec_demand_by_region.csv", stringsAsFactors = TRUE)
-# demand_overview <- read.csv("elec_overview.csv", stringsAsFactors = TRUE)
+# read in data
+# 2015-2019 6-month data
+# large .xlsx for region
+# API pull
 
 # combine separate .csv files
 demand_all_data <- list.files(path="/Users/sambasala/Desktop/STAT 190/data", full.names = TRUE) %>% 
   lapply(read_csv) %>% 
   bind_rows 
 
+# need to include DIBA!
 demand_all_data_final <- subset(demand_all_data, select = -c(1, 3:6, 10:41))
 
 colnames(demand_all_data_final) <- c("Date", "Demand_MW", "Net_Generation_MW",
@@ -48,8 +50,3 @@ str(aggregate_demand)
 summary(aggregate_demand)
 
 unique(aggregate_demand$Region)
-
-# create graphs for each region
-
-
-
