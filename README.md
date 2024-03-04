@@ -21,9 +21,9 @@ Trello: https://trello.com/invite/datacapstone3/ATTIaec2913b7e5c31b0741bf3e3937f
 - source: https://www.eia.gov/electricity/gridmonitor/dashboard/electric_overview/US48/US48
 - can we predict grid demand
 - steps
-    1) read in the 2015-2019 demand data files (now in GitHub) using R
+    1) read in the demand data files (in GitHub) using R
     2) data exploration
-    3) data cleaning: handling NAs, aggregating to days, and creating categories for demand
+    3) data cleaning: handling NAs, aggregating to days, and creating low-mid-high categories for demand
     4) create visualizations with clean data
     5) create predictive model for demand
  - DIBA = directly interconnected balancing authority
@@ -31,6 +31,6 @@ Trello: https://trello.com/invite/datacapstone3/ATTIaec2913b7e5c31b0741bf3e3937f
 # Wildfire
 
 # Current Issues
-- determine a specific region to analyze
+- determine a specific region to analyze (especially since demand data depends on this)
 - use population data?
 - reorganize the GitHub!
