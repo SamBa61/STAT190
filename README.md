@@ -31,6 +31,6 @@ Trello: https://trello.com/invite/datacapstone3/ATTIaec2913b7e5c31b0741bf3e3937f
 # Wildfire
 
 # Current Issues
-- determine a specific region to analyze (especially since demand data depends on this)
+- determine a specific region to analyze - balancing authorities in California
 - use population data?
 - reorganize the GitHub!
