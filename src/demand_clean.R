@@ -1,6 +1,4 @@
-####################################################################################################
-
-# Data Cleaning
+source()
 
 str(demand_all_data_final)
 # Data Date is a character -> make it date
