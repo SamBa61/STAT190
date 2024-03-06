@@ -23,7 +23,7 @@ Trello: https://trello.com/invite/datacapstone3/ATTIaec2913b7e5c31b0741bf3e3937f
 - steps
     1) read in the demand data files (in GitHub) using R
     2) data exploration
-    3) data cleaning: handling NAs, aggregating to days, and creating low-mid-high categories for demand
+    3) data cleaning: handling NAs, aggregating to days, and **creating low-mid-high categories for demand**
     4) create visualizations with clean data
     5) create predictive model for demand
  - DIBA = directly interconnected balancing authority
