@@ -2,22 +2,13 @@
 rm(list = ls())
 
 # libraries
-library(dplyr)
-library(readr)
+library(dplyr) # for
+library(readr) # for
 
 # read in data
-# large .xlsx for region
-# API pull
-
-# combine separate .csv files
-demand_all_data <- list.files(path="/Users/sambasala/Desktop/STAT 190/data", full.names = TRUE) %>% 
+# combine separate .csv files from data_raw
+demand_all_data <- list.files(path="/Users/sambasala/Desktop/STAT 190/DataCapstone/data_raw", full.names = TRUE) %>% 
   lapply(read_csv) %>% 
   bind_rows 
 
-# need to include DIBA!
-demand_all_data_final <- subset(demand_all_data, select = -c(1, 3:6, 10:41))
-
-colnames(demand_all_data_final) <- c("Date", "Demand_MW", "Net_Generation_MW",
-                                     "Total_Interchange_MW", "Region")
-
-#write_file()
+write_file()

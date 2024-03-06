@@ -1,4 +1,12 @@
-source()
+source("/Users/sambasala/Desktop/STAT 190/DataCapstone/src/demad_pull_raw.R")
+
+str(demand_all_data)
+
+# need to include DIBA!
+demand_all_data_final <- subset(demand_all_data, select = -c(3:6, 11:16, 18:42))
+
+colnames(demand_all_data_final) <- c("Date", "Demand_MW", "Net_Generation_MW",
+                                     "Total_Interchange_MW", "Region")
 
 str(demand_all_data_final)
 # Data Date is a character -> make it date
