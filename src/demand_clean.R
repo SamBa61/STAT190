@@ -1,35 +1,46 @@
-source("/Users/sambasala/Desktop/STAT 190/DataCapstone/src/demad_pull_raw.R")
+source("/Users/sambasala/Desktop/STAT 190/DataCapstone/src/demand_pull_raw.R")
 
-str(demand_all_data)
+# get rid of unecessary columns
+demand_clean <- subset(demand_all_data, select = -c(3:6, 11:16, 18:42))
 
-# need to include DIBA!
-demand_all_data_final <- subset(demand_all_data, select = -c(3:6, 11:16, 18:42))
+colnames(demand_clean) <- c("Balancing_Authority", "Date", "Demand_MW", "Net_Generation_MW",
+                                     "Total_Interchange_MW", "Valid_DIBA_MW", "Region")
 
-colnames(demand_all_data_final) <- c("Date", "Demand_MW", "Net_Generation_MW",
-                                     "Total_Interchange_MW", "Region")
+# create subset for CAL region
+demand_clean <- subset(demand_clean, Region == "CAL")
 
-str(demand_all_data_final)
-# Data Date is a character -> make it date
-# Region is a character -> make it a factor
+# remove region from demand_clean
+demand_clean <- subset(demand_clean, select = -c(7))
 
-demand_all_data_final$Date <- as.Date(demand_all_data_final$Date, format = "%m/%d/%Y")
-demand_all_data_final$Region <- as.factor(demand_all_data_final$Region)
+# check data types
+str(demand_clean)
+# Date is a character -> make it date
+# Balancing_Authority is a character -> make it a factor
 
+demand_clean$Date <- as.Date(demand_clean$Date, format = "%m/%d/%Y")
+demand_clean$Balancing_Authority <- as.factor(demand_clean$Balancing_Authority)
+str(demand_clean)
 
-summary(demand_all_data_final)
-# Demand has 454798 NAs
-# Net Generation has 20285 NAs
-# Total Interchange has 20751 NAs
+summary(demand_clean)
+# Demand has 1647 NAs
+# Net Generation has 1645 NAs
+# Total Interchange has 1799 NAs
+# Valid_DIBA_MW has 13621 NAs
+# deal with these by using na.rm in aggregation
 
-# (1) remove those rows or (2) impute these values with 'typical' values 
-
-# Handle NAs (remove) and Aggregate by Region and Date
-aggregate_demand <- aggregate(cbind(Demand_MW, Net_Generation_MW, Total_Interchange_MW) ~ Region + Date, 
-                              data = demand_all_data_final, 
+# Aggregate by Balancing Authorities in California and Date
+demand_clean <- aggregate(cbind(Demand_MW, Net_Generation_MW, Total_Interchange_MW, Valid_DIBA_MW) ~ Balancing_Authority + Date, 
+                              data = demand_clean, 
                               FUN = sum,
                               na.rm = TRUE)
 
-str(aggregate_demand)
-summary(aggregate_demand)
+str(demand_clean)
+summary(demand_clean)
 
-unique(aggregate_demand$Region)
+# create low, medium, high demand Factor column
+# will need to dig back into STAT 172 notes to do this
+
+
+
+
+
