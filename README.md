@@ -29,6 +29,7 @@ Trello: https://trello.com/invite/datacapstone3/ATTIaec2913b7e5c31b0741bf3e3937f
  - DIBA = directly interconnected balancing authority
 
 # Wildfire
+- write how to read select and read in weather data for desired cities
 
 # Current Issues
 - determine a specific region to analyze (especially since demand data depends on this)
