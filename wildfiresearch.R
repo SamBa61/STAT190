@@ -62,16 +62,16 @@ c4weather <- read.csv("Scranton.csv", stringsAsFactors = FALSE)
 c5weather <- read.csv("Fresno.csv", stringsAsFactors = FALSE)
 
 
-c1_latitude <- c1weather$latitude[1] # Extract the first value from the "latitude" column
-c1_longitude <- c1weather$longitude[1]# Extract the first value from the "longitude" column
-c2_latitude <- c2weather$latitude[1]
-c2_longitude <- c2weather$longitude[1]
-c3_latitude <- c3weather$latitude[1] 
-c3_longitude <- c3weather$longitude[1]
-c4_latitude <- c4weather$latitude[1] 
-c4_longitude <- c4weather$longitude[1]
-c5_latitude <- c5weather$latitude[1] 
-c5_longitude <- c5weather$longitude[1]
+c1_latitude <- as.numeric(c1weather$latitude[1]) # Extract the first value from the "latitude" column
+c1_longitude <- as.numeric(c1weather$longitude[1]) # Extract the first value from the "longitude" column
+c2_latitude <- as.numeric(c2weather$latitude[1])
+c2_longitude <- as.numeric(c2weather$longitude[1])
+c3_latitude <- as.numeric(c3weather$latitude[1]) 
+c3_longitude <- as.numeric(c3weather$longitude[1])
+c4_latitude <- as.numeric(c4weather$latitude[1]) 
+c4_longitude <- as.numeric(c4weather$longitude[1])
+c5_latitude <- as.numeric(c5weather$latitude[1]) 
+c5_longitude <- as.numeric(c5weather$longitude[1])
 
 
 # clean weird rows
@@ -111,15 +111,13 @@ c5weather$date <- as.Date(c5weather$c5_date, format = "%m/%d/%Y")
 
 ################## Combine into 1 Weather Dataset ####################
 
-# List of datasets
-datasets <- list(c1weather, c2weather, c3weather, c4weather, c5weather)
-
-# Combine columns using cbind and do.call
-Weather <- do.call(cbind, datasets)
-
-#DATE COLUMNS ARE WEIRD
-
-
+Weather <- c1weather %>%
+  merge( c2weather, by="date") %>%
+  merge( c3weather, by="date") %>%
+  merge( c4weather, by="date") %>%
+  merge( c5weather, by="date")
+  
+Weather <- subset(Weather, select = -c(c1_date, c2_date, c3_date, c4_date, c5_date))
 
 
 
@@ -149,20 +147,22 @@ Weather <- do.call(cbind, datasets)
 
 
 #higher line
-#higherSlope = (c2_longitude-c1_longitude)-(c2_latitude-c1_latitude)
-#higherIntercept = c1_longitude - (m*c1_latitude)
-#all_CA_wild$LONGITUDE <= higherSlope*all_CA_wild$LATITUDE + higherIntercept
+higherSlope = (c2_longitude-c1_longitude)-(c2_latitude-c1_latitude)
+higherIntercept = c1_longitude - (higherSlope*c1_latitude)
+all_CA_wild$LONGITUDE <= higherSlope*all_CA_wild$LATITUDE + higherIntercept
 
 #lower line
-#lowerSlope = (c4_longitude-c3_longitude)-(c4_latitude-c3_latitude)
-#lowerIntercept = c3_longitude - (m*c3_latitude)
-#all_CA_wild$LONGITUDE > lowerSlope*all_CA_wild$LATITUDE + lowerIntercept
+lowerSlope = (c4_longitude-c3_longitude)-(c4_latitude-c3_latitude)
+lowerIntercept = c3_longitude - (lowerSlope*c3_latitude)
+all_CA_wild$LONGITUDE > lowerSlope*all_CA_wild$LATITUDE + lowerIntercept
 
 
 # Filter latitude for Central California
 #THESE NUMBERS ARE BASED ON OUR CURRENT 5 CITIES
 CISO_wild <- all_CA_wild %>%
-  filter(LATITUDE >= 36.4 & LATITUDE <= 37.8 & LONGITUDE <= -116.4 & LONGITUDE >= -122.5)
+  filter((all_CA_wild$LONGITUDE >= higherSlope*all_CA_wild$LATITUDE + higherIntercept)
+          & (all_CA_wild$LONGITUDE <= lowerSlope*all_CA_wild$LATITUDE + lowerIntercept))
+  #filter(LATITUDE >= 36.4 & LATITUDE <= 37.8 & LONGITUDE <= -116.4 & LONGITUDE >= -122.5)
 
 
 
@@ -222,7 +222,17 @@ ggplot() +
                fill = "lightblue", color = "black") +
   
   # Add horizontal lines at LATITUDE 36.4 and 37.8
-  geom_hline(yintercept = c(36.4, 37.8), linetype = "dashed", color = "black") +
+  #geom_hline(yintercept = c(36.4, 37.8), linetype = "dashed", color = "black") +
+  #geom_abline(intercept = higherIntercept, slope = higherSlope, linetype = "dashed", color = "black", size = 100) +
+  #geom_abline(intercept = lowerIntercept, slope = lowerSlope, linetype = "dashed", color = "black", size = 100) +
+  # Add diagonal lines
+  geom_segment(data = california_map,
+               aes(x = c1_longitude, y = c1_latitude, xend = c2_longitude, yend = c2_latitude),
+               linetype = "dashed", color = "black") +
+  geom_segment(data = california_map,
+               aes(x = c3_longitude, y = c3_latitude, xend = c4_longitude, yend = c4_latitude),
+               linetype = "dashed", color = "black") +
+  
   
   coord_fixed(1.3) +  # Aspect ratio adjustment
   theme_void() +      # Remove axis and gridlines
