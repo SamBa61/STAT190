@@ -1,6 +1,5 @@
 source("/Users/sambasala/Desktop/STAT 190/DataCapstone/src/demand_pull_raw.R")
 
-library(dlm) # for creating a time series models with the data
 library(lubridate)
 
 # get rid of unecessary columns
@@ -25,12 +24,18 @@ summary(demand_clean)
 # Valid_DIBA_MW has 13621 NAs
 # deal with these by using na.rm in aggregation
 
+demand_banc <- subset(demand_clean, demand_clean$Balancing_Authority == "BANC")
+
 # Aggregate by Balancing Authorities in California and Date
 demand_clean <- aggregate(cbind(Demand_MW, Net_Generation_MW, Total_Interchange_MW, Valid_DIBA_MW) ~ Balancing_Authority + Date, 
                               data = demand_clean, 
                               FUN = sum,
                               na.rm = TRUE)
 
+# create year and month columns for easier use when graphing
+demand_clean$Year <- format(demand_clean$Date, "%Y")
+demand_clean$Month <- format(demand_clean$Date, "%m")
+  
 str(demand_clean)
 summary(demand_clean)
 
@@ -40,18 +45,5 @@ demand_tidc_clean <- subset(demand_clean, Balancing_Authority == "TIDC")
 demand_ciso_clean <- subset(demand_clean, Balancing_Authority == "CISO")
 demand_ldwp_clean <- subset(demand_clean, Balancing_Authority == "LDWP")
 demand_iid_clean <- subset(demand_clean, Balancing_Authority == "IID")
-
-# change dataframe to time series
-my_time_series <- ts(demand_banc_clean$Demand_MW, 
-                     start = min(as.integer(format(as.Date(demand_banc_clean$Date), "%Y"))), 
-                     end = max(as.integer(format(as.Date(demand_banc_clean$Date), "%Y"))),
-                     frequency = 12)
-
-plot(my_time_series, type = "l", main = "title")
-
-
-# create low, medium, high demand groups
-
-
 
 
