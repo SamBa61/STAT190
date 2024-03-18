@@ -10,3 +10,5 @@ library(readr) # for
 demand_all_data <- list.files(path="/Users/sambasala/Desktop/STAT 190/DataCapstone/data_raw", full.names = TRUE) %>% 
   lapply(read_csv) %>% 
   bind_rows 
+
+# NEED DATA TO 12/31/2020

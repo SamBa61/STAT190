@@ -1,16 +1,13 @@
 source("/Users/sambasala/Desktop/STAT 190/DataCapstone/src/demand_pull_raw.R")
 
+library(dlm) # for creating a time series models with the data
+library(lubridate)
+
 # get rid of unecessary columns
-demand_clean <- subset(demand_all_data, select = -c(3:6, 11:16, 18:42))
+demand_clean <- subset(demand_all_data, select = -c(3:6, 11:42))
 
 colnames(demand_clean) <- c("Balancing_Authority", "Date", "Demand_MW", "Net_Generation_MW",
-                                     "Total_Interchange_MW", "Valid_DIBA_MW", "Region")
-
-# create subset for CAL region
-demand_clean <- subset(demand_clean, Region == "CAL")
-
-# remove region from demand_clean
-demand_clean <- subset(demand_clean, select = -c(7))
+                                     "Total_Interchange_MW", "Valid_DIBA_MW")
 
 # check data types
 str(demand_clean)
@@ -37,9 +34,23 @@ demand_clean <- aggregate(cbind(Demand_MW, Net_Generation_MW, Total_Interchange_
 str(demand_clean)
 summary(demand_clean)
 
-# create low, medium, high demand Factor column
-# will need to dig back into STAT 172 notes to do this
+# create time series models for 5 balancing authorities: BANC, TIDC, CISO, LDWP, IID
+demand_banc_clean <- subset(demand_clean, Balancing_Authority == "BANC")
+demand_tidc_clean <- subset(demand_clean, Balancing_Authority == "TIDC")
+demand_ciso_clean <- subset(demand_clean, Balancing_Authority == "CISO")
+demand_ldwp_clean <- subset(demand_clean, Balancing_Authority == "LDWP")
+demand_iid_clean <- subset(demand_clean, Balancing_Authority == "IID")
 
+# change dataframe to time series
+my_time_series <- ts(demand_banc_clean$Demand_MW, 
+                     start = min(as.integer(format(as.Date(demand_banc_clean$Date), "%Y"))), 
+                     end = max(as.integer(format(as.Date(demand_banc_clean$Date), "%Y"))),
+                     frequency = 12)
+
+plot(my_time_series, type = "l", main = "title")
+
+
+# create low, medium, high demand groups
 
 
 
