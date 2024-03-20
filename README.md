@@ -31,3 +31,4 @@ Trello: https://trello.com/invite/datacapstone3/ATTIaec2913b7e5c31b0741bf3e3937f
 # Current Issues
 - use population data?
 - time series show data impurities that require some hefty changes
+- WTS: remind them of our goals, clean CAL region demand data table, ts graph for it, need advice for model predicting demand (fixing impurities, type of model)
