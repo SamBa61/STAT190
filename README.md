@@ -21,16 +21,13 @@ Trello: https://trello.com/invite/datacapstone3/ATTIaec2913b7e5c31b0741bf3e3937f
 - source: https://www.eia.gov/electricity/gridmonitor/dashboard/electric_overview/US48/US48
 - can we predict grid demand
 - steps
-    1) read in the demand data files (in GitHub) using R
-    2) data exploration
-    3) data cleaning: handling NAs, aggregating to days, and **creating low-mid-high categories for demand**
-    4) **create visualizations with clean data**
-    5) **create predictive model for demand**
+    1) data pull: read in the demand data files (in GitHub) using R
+    2) data cleaning: delete unncessary columns, rename columns, check and change data types, remove NAs through sum aggregation by authority and date, create year and month columns, separate into CAL region authorities 
+    4) data modeling: create time series visualizations for each CAL region, create a simple linear regression predictive model (need low-high categories?). Create dlm package models?
  - DIBA = directly interconnected balancing authority
 
 # Wildfire
 
 # Current Issues
-- determine a specific region to analyze - balancing authorities in California
 - use population data?
-- reorganize the GitHub!
+- time series show data impurities that require some hefty changes
