@@ -2,7 +2,7 @@ source("/Users/sambasala/Desktop/STAT 190/DataCapstone/src/demand_pull_raw.R")
 
 library(lubridate)
 
-# get rid of unecessary columns
+# get rid of unnecessary columns
 demand_clean <- subset(demand_all_data, select = -c(3:6, 11:42))
 
 colnames(demand_clean) <- c("Balancing_Authority", "Date", "Demand_MW", "Net_Generation_MW",
@@ -24,8 +24,6 @@ summary(demand_clean)
 # Valid_DIBA_MW has 13621 NAs
 # deal with these by using na.rm in aggregation
 
-demand_banc <- subset(demand_clean, demand_clean$Balancing_Authority == "BANC")
-
 # Aggregate by Balancing Authorities in California and Date
 demand_clean <- aggregate(cbind(Demand_MW, Net_Generation_MW, Total_Interchange_MW, Valid_DIBA_MW) ~ Balancing_Authority + Date, 
                               data = demand_clean, 
@@ -33,8 +31,9 @@ demand_clean <- aggregate(cbind(Demand_MW, Net_Generation_MW, Total_Interchange_
                               na.rm = TRUE)
 
 # create year and month columns for easier use when graphing
-demand_clean$Year <- format(demand_clean$Date, "%Y")
-demand_clean$Month <- format(demand_clean$Date, "%m")
+demand_clean$Year <- as.numeric(format(demand_clean$Date, "%Y"))
+demand_clean$Month <- as.factor(format(demand_clean$Date, "%m"))
+demand_clean$Weekday <- as.factor(weekdays(demand_clean$Date))
   
 str(demand_clean)
 summary(demand_clean)
