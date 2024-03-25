@@ -1,6 +1,6 @@
 source("/Users/sambasala/Desktop/STAT 190/DataCapstone/src/demand_pull_raw.R")
 
-library(lubridate)
+library(lubridate) # for 
 
 # get rid of unnecessary columns
 demand_clean <- subset(demand_all_data, select = -c(3:6, 11:42))
