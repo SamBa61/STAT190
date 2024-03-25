@@ -49,5 +49,5 @@ Reload and download the CSV
 
 
 # Current Issues
-- use population data?
-- time series show data impurities - can fix these using ImputeTS package
+- Use population data?
+- Time series show data impurities - working through this. Winsorization likely works for everything except BANC. Struggling with imputeTS package.
