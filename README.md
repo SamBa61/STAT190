@@ -23,7 +23,7 @@ Trello: https://trello.com/invite/datacapstone3/ATTIaec2913b7e5c31b0741bf3e3937f
 - steps
     1) data pull: read in the demand data files (in GitHub) using R
     2) data cleaning: delete unncessary columns, rename columns, check and change data types, remove NAs through sum aggregation by authority and date, create year and month columns, separate into CAL region authorities 
-    4) data modeling: create time series visualizations for each CAL region, create a simple linear regression predictive model (need low-high categories?). Create dlm package models?
+    4) data modeling: create time series visualizations for each CAL region, created a simple linear regression predictive model (need low-high categories later). Now dealing with data impurities to improve model. Create dlm package models?
  - DIBA = directly interconnected balancing authority
 
 # Wildfire
@@ -50,5 +50,4 @@ Reload and download the CSV
 
 # Current Issues
 - use population data?
-- time series show data impurities that require some hefty changes
-- WTS: remind them of our goals, clean CAL region demand data table, ts graph for it, need advice for model predicting demand (fixing impurities, type of model)
+- time series show data impurities - can fix these using ImputeTS package
