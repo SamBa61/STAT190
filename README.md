@@ -23,7 +23,7 @@ Trello: https://trello.com/invite/datacapstone3/ATTIaec2913b7e5c31b0741bf3e3937f
 - steps
     1) data pull: read in the demand data files (in GitHub) using R
     2) data cleaning: delete unncessary columns, rename columns, check and change data types, remove NAs through sum aggregation by authority and date, create year and month columns, separate into CAL region authorities 
-    4) data modeling: creating a simple linear regression predictive model for each CAL region (need low-high categories later). Now dealing with handling extraneous outliers in 2 regions and ensuring that linear model process is sound
+    4) data modeling: creating a simple linear regression predictive model for each CAL region (need low-high categories later). Now dealing with handling extraneous outliers in 2 regions and ensuring that linear regression modeling process is sound
 # Wildfire
 Wildfire Data:
 - Big wildfire data source: https://www.kaggle.com/datasets/behroozsohrabi/us-wildfire-records-6th-edition?select=data.csv
