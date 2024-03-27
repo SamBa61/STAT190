@@ -22,6 +22,7 @@ ggplot(demand_banc_clean, aes(x = Date, y = Demand_MW)) +
 ggplot(demand_ciso_clean, aes(x = Date, y = Demand_MW)) +
   geom_line(color = "black") +
   labs(x = "Year", y = "Demand (MW)", title = "CISO Daily Demand") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   theme_bw()
 
 # TIDC
@@ -109,7 +110,8 @@ remove_outliers <- function(dataset) {
 
 demand_banc_clean <- remove_outliers(demand_banc_clean)
 # create linear model
-demand_banc_model <- lm(data = demand_banc_clean, Demand_MW ~ Month + Year + Weekday)
+demand_banc_model <- lm(data = demand_banc_clean, Demand_MW ~ Month + Year + Weekday
+                        + Net_Generation_MW + Total_Interchange_MW)
 summary(demand_banc_model)
 # create predictions
 demand_banc_clean$Predictions <- predict(demand_banc_model)
@@ -126,11 +128,33 @@ summary(demand_ciso_baseline_model)
 # comment on R^2, F-stat, p-value, residual standard error
 
 # look at histograms and scatterplots of variables
-hist(demand_ciso_clean$Year) # normal
-hist(demand_ciso_clean$Demand_MW) # pretty normally distributed, slight left skew
-table(demand_ciso_clean$Month) # about the same count
-table(demand_ciso_clean$Weekday) # about the same count
-plot(demand_ciso_clean$Year, demand_ciso_clean$Demand_MW) # not helpful
+ggplot(data = demand_ciso_clean, aes(x = Year)) + 
+  geom_histogram(binwidth = 1, color = "black") +
+  labs(title = "Year Frequencies", y = "Frequency") +
+  scale_x_continuous(breaks = seq(floor(min(demand_ciso_clean$Year)), ceiling(max(demand_ciso_clean$Year)), by = 1)) + 
+  theme_bw()
+# normal
+
+ggplot(data = demand_ciso_clean, aes(x = Demand_MW)) + 
+  geom_histogram(color = "black") +
+  labs(title = "Demand (MW) Frequencies", y = "Frequency") +
+  theme_bw()
+# slightly left skewed
+
+ggplot(data = demand_ciso_clean, aes(x = Month)) +
+  geom_bar(color = "black") +
+  labs(y = "Frequency", title = "Month Frequency") +
+  theme_bw()
+# about the same for each category
+
+ggplot(data = demand_ciso_clean, aes(x = Weekday)) +
+  geom_bar(color = "black") +
+  labs(y = "Frequency", title = "Weekday Frequency") +
+  theme_bw()
+# about the same for each category
+
+plot(demand_ciso_clean$Year, demand_ciso_clean$Demand_MW) 
+# not helpful
 
 # remove outliers
 demand_ciso_clean <- remove_outliers(demand_ciso_clean) 
@@ -141,17 +165,42 @@ summary(demand_ciso_model)
 # comment on changed R^2, F-stat, p-value, residual standard error
 
 # redo histograms and scatterplots of variables
-hist(demand_ciso_clean$Year) # normal
-hist(demand_ciso_clean$Demand_MW) # more normally distributed
-table(demand_ciso_clean$Month) # about the same count
-table(demand_ciso_clean$Weekday) # about the same count
-plot(demand_ciso_clean$Year, demand_ciso_clean$Demand_MW) # not helpful
+# look at histograms and scatterplots of variables
+ggplot(data = demand_ciso_clean, aes(x = Year)) + 
+  geom_histogram(binwidth = 1, color = "black") +
+  labs(title = "Year Frequencies", y = "Frequency") +
+  scale_x_continuous(breaks = seq(floor(min(demand_ciso_clean$Year)), ceiling(max(demand_ciso_clean$Year)), by = 1)) + 
+  theme_bw()
+# normal
+
+ggplot(data = demand_ciso_clean, aes(x = Demand_MW)) + 
+  geom_histogram(color = "black") +
+  labs(title = "Demand (MW) Frequencies", y = "Frequency") +
+  scale_x_continuous(labels = function(x) format(x, scientific = FALSE)) +  
+  theme_bw()
+# slightly left skewed
+
+ggplot(data = demand_ciso_clean, aes(x = Month)) +
+  geom_bar(color = "black") +
+  labs(y = "Frequency", title = "Month Frequency") +
+  theme_bw()
+# about the same for each category
+
+ggplot(data = demand_ciso_clean, aes(x = Weekday)) +
+  geom_bar(color = "black") +
+  labs(y = "Frequency", title = "Weekday Frequency") +
+  theme_bw()
+# about the same for each category
 
 # all looks well as is, let's continue onto collinearity
 # since the F-stat is low and x's appear significant, we can also move on from this
 
 # Look at residual plot of final model
-plot(residuals(demand_ciso_model) ~ fitted.values(demand_ciso_model))
+options(scipen = 100)
+plot(residuals(demand_ciso_model) ~ fitted.values(demand_ciso_model), 
+     xlab = "Fitted Values",
+     ylab = "Residuals",
+     main = "Residual Plot")
 # In this plot we see random scatter, which is good. This means the linearity 
 # assumption is met. 
 # However, we do not have some equal variance since we have a slight megaphone shape
@@ -166,6 +215,7 @@ ggplot(demand_ciso_clean) +
   labs(x = "Year", y = "Demand (MW)", title = "CISO Daily Demand", color = "Demand") +
   scale_color_manual(values = c("Actual" = "black", "Predicted" = "coral")) +
   scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
   theme_bw()
 
 ###########################################################################################
