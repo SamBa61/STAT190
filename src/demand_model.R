@@ -47,17 +47,6 @@ ggplot(demand_iid_clean, aes(x = Date, y = Demand_MW)) +
 
 # Steps - do all of these for each region (but go through only one first)
 
-# Create baseline model with all variables
-# Look at histograms of variables for model to identify possible transformations
-# Look at scatterplots between x variables and y variable
-# Remove outliers
-# Recreate model with changed variables
-# Redo histograms and scatterplots 
-# Transform variables if applicable
-# Look for collinearity
-# Look at residual plot of final model
-# Interpret final model
-
 # Hypothesis testing for overall model (commented on) and invidual variables
 # Confidence Intervals
 
@@ -277,9 +266,4 @@ ggplot(demand_tidc_clean) +
 
 ###########################################################################################
 
-
-# create low, medium, high demand groups - do this later
-demand_banc_clean$Demand_Category <- cut(data$value, 
-                                         breaks = c(), 
-                                         labels = c("Low", "Medium", "High"), 
-                                         include.lowest = TRUE)
+# could also investigate covariate for interchange
