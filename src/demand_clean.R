@@ -61,23 +61,19 @@ demand_clean$Weekday <- as.factor(weekdays(demand_clean$Date))
 
 ##################################################################################################################
 
-# Create separate data frames for each region - AUTOMATE THIS
+# Create separate data frames for each region
 
 # pull different balancing authorities into list
+balancing_authority_list <- c("BANC", "TIDC", "CISO", "LDWP", "IID")
 
 # for loop iterate through list and create model for each
-  
-# 5 California balancing authorities: BANC, TIDC, CISO, LDWP, IID
-demand_banc_clean <- subset(demand_clean, Balancing_Authority == "BANC")
-demand_tidc_clean <- subset(demand_clean, Balancing_Authority == "TIDC")
-demand_ciso_clean <- subset(demand_clean, Balancing_Authority == "CISO")
-demand_ldwp_clean <- subset(demand_clean, Balancing_Authority == "LDWP")
-demand_iid_clean <- subset(demand_clean, Balancing_Authority == "IID")
+# loop also creates a binary demand column
+for (balancing_authority in balancing_authority_list) {
+  subset_name <- paste0("demand_", tolower(balancing_authority))
+  subset_data <- assign(subset_name, subset(demand_clean, Balancing_Authority == balancing_authority))
+  subset_data$Demand_Category <- as.factor(ifelse(subset_data$Demand_MW >= median(subset_data$Demand_MW), "High", "Low"))
+  assign(subset_name, subset_data)
+}
 
 ##################################################################################################################
-
-# create low/high or low/medium/high categories for demand for each region --> function
-
-demand_clean$Demand_Category <- ifelse(demand_clean$Demand_MW >= median(demand_clean$Demand_MW), "High", "Low")
-table(demand_clean$Demand_Category)
 

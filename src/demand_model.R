@@ -10,55 +10,13 @@ library(ggplot2) # for creating gnarly data visualizations
 
 ##################################################################################################################
 
-# Time series plots (unimputed)
-
-# BANC
-ggplot(demand_banc_clean, aes(x = Date, y = Demand_MW)) +
-  geom_line(color = "black") +
-  labs(x = "Year", y = "Demand (MW)", title = "BANC Daily Demand") +
-  theme_bw()
-
-# CISO
-ggplot(demand_ciso_clean, aes(x = Date, y = Demand_MW)) +
-  geom_line(color = "black") +
-  labs(x = "Year", y = "Demand (MW)", title = "CISO Daily Demand") +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  theme_bw()
-
-# TIDC
-ggplot(demand_tidc_clean, aes(x = Date, y = Demand_MW)) +
-  geom_line(color = "black") +
-  labs(x = "Year", y = "Demand (MW)", title = "TIDC Daily Demand") +
-  theme_bw()
-
-# LDWP
-ggplot(demand_ldwp_clean, aes(x = Date, y = Demand_MW)) +
-  geom_line(color = "black") +
-  labs(x = "Year", y = "Demand (MW)", title = "LDWP Daily Demand") +
-  theme_bw()
-
-# IID
-ggplot(demand_iid_clean, aes(x = Date, y = Demand_MW)) +
-  geom_line(color = "black") +
-  labs(x = "Year", y = "Demand (MW)", title = "IID Daily Demand") +
-  theme_bw()
-
-###########################################################################################
-
-# Steps - do all of these for each region (but go through only one first)
-
-# Hypothesis testing for overall model (commented on) and invidual variables
-# Confidence Intervals
-
-###########################################################################################
-
 # function to remove outliers from a dataset
 
 remove_outliers <- function(dataset) {
   
   # creating linear regression model
   m1 = lm(data = dataset, Demand_MW ~ Month + Year + Weekday)
-
+  
   # standardized residuals
   rsta = rstandard(m1)
   rsta_indices <- which(rsta < -2 | rsta > 2)
@@ -88,101 +46,177 @@ remove_outliers <- function(dataset) {
   
   # subset without outliers
   dataset_no_outliers <- dataset[-c(rsta_indices, rstu_indices,
-                                                    lev_indices, cooks_indices),]
+                                    lev_indices, cooks_indices),]
   return(dataset_no_outliers)
-
+  
 }
 
 ###########################################################################################
 
-# BANC - problems here still
+# Time series Plots (unimputed)
 
-demand_banc_clean <- remove_outliers(demand_banc_clean)
-# create linear model
-demand_banc_model <- lm(data = demand_banc_clean, Demand_MW ~ Month + Year + Weekday
-                        + Net_Generation_MW + Total_Interchange_MW)
-summary(demand_banc_model)
-# create predictions
-demand_banc_clean$Predictions <- predict(demand_banc_model)
+# BANC
+ggplot(demand_banc, aes(x = Date, y = Demand_MW)) +
+  geom_line(color = "black") +
+  labs(x = "Year", y = "Demand (MW)", title = "BANC Daily Demand") +
+  theme_bw()
 
-# plot
+# CISO
+ggplot(demand_ciso, aes(x = Date, y = Demand_MW)) +
+  geom_line(color = "black") +
+  labs(x = "Year", y = "Demand (MW)", title = "CISO Daily Demand") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  theme_bw()
+
+# TIDC
+ggplot(demand_tidc, aes(x = Date, y = Demand_MW)) +
+  geom_line(color = "black") +
+  labs(x = "Year", y = "Demand (MW)", title = "TIDC Daily Demand") +
+  theme_bw()
+
+# LDWP
+ggplot(demand_ldwp, aes(x = Date, y = Demand_MW)) +
+  geom_line(color = "black") +
+  labs(x = "Year", y = "Demand (MW)", title = "LDWP Daily Demand") +
+  theme_bw()
+
+# IID
+ggplot(demand_iid, aes(x = Date, y = Demand_MW)) +
+  geom_line(color = "black") +
+  labs(x = "Year", y = "Demand (MW)", title = "IID Daily Demand") +
+  theme_bw()
 
 ###########################################################################################
 
-# CISO
+# CISO Modeling
 
-# baseline model
-demand_ciso_baseline_model <- lm(data = demand_ciso_clean, Demand_MW ~ Month + Year + Weekday)
-summary(demand_ciso_baseline_model)
-# comment on R^2, F-stat, p-value, residual standard error
+# look at histograms and scatterplots of variables - only for analysis
 
-# look at histograms and scatterplots of variables
-ggplot(data = demand_ciso_clean, aes(x = Year)) + 
+# Year Histogram
+ggplot(data = demand_ciso, aes(x = Year)) + 
   geom_histogram(binwidth = 1, color = "black") +
   labs(title = "Year Frequencies", y = "Frequency") +
-  scale_x_continuous(breaks = seq(floor(min(demand_ciso_clean$Year)), ceiling(max(demand_ciso_clean$Year)), by = 1)) + 
+  scale_x_continuous(breaks = seq(floor(min(demand_ciso$Year)), ceiling(max(demand_ciso$Year)), by = 1)) + 
   theme_bw()
 # normal
 
-ggplot(data = demand_ciso_clean, aes(x = Demand_MW)) + 
+# Demand Histogram
+ggplot(data = demand_ciso, aes(x = Demand_MW)) + 
   geom_histogram(color = "black") +
   labs(title = "Demand (MW) Frequencies", y = "Frequency") +
   theme_bw()
 # slightly left skewed
 
-ggplot(data = demand_ciso_clean, aes(x = Month)) +
+# Month Frequencies
+ggplot(data = demand_ciso, aes(x = Month)) +
   geom_bar(color = "black") +
   labs(y = "Frequency", title = "Month Frequency") +
   theme_bw()
 # about the same for each category
 
-ggplot(data = demand_ciso_clean, aes(x = Weekday)) +
+# Weekday Frequencies
+ggplot(data = demand_ciso, aes(x = Weekday)) +
   geom_bar(color = "black") +
   labs(y = "Frequency", title = "Weekday Frequency") +
   theme_bw()
 # about the same for each category
+# these need to be in order of the week if presented
 
-plot(demand_ciso_clean$Year, demand_ciso_clean$Demand_MW) 
-# not helpful
+# Train/Test Split 
+# train: <= 2018
+# test: > 2018
+demand_ciso_train <- subset(demand_ciso, demand_ciso$Year <= 2018)
+demand_ciso_test <- subset(demand_ciso, demand_ciso$Year > 2018)
+
+# Baseline Model
+demand_ciso_baseline <- lm(data = demand_ciso_train, Demand_MW ~ Month + Year + Weekday)
+summary(demand_ciso_baseline)
+# comment on R^2, F-stat, p-value, residual standard error
+
+# create predictions
+demand_ciso_train$Predictions <- predict(demand_ciso_baseline, demand_ciso_train)
+demand_ciso_test$Predictions <- predict(demand_ciso_baseline, demand_ciso_test)
+
+# recombine the data
+demand_ciso <- rbind(demand_ciso_train, demand_ciso_test)
+
+# plot
+ggplot(demand_ciso) +
+  geom_line(aes(x = Date, y = Demand_MW, color = "Actual")) +
+  geom_line(aes(x = Date, y = Predictions, color = "Predicted")) +
+  labs(x = "Year", y = "Demand (MW)", title = "CISO Daily Demand", color = "Demand") +
+  scale_color_manual(values = c("Actual" = "black", "Predicted" = "red")) +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  geom_vline(xintercept = as.numeric(as.Date("2019-01-01")), linetype = "dashed", color = "black") +
+  theme_bw()
+
+# residuals and error
+residuals <- demand_ciso_test$Demand_MW - demand_ciso_test$Predictions
+residual_percent <- residuals / demand_ciso_test$Demand_MW
+mse <- mean(residuals^2)
+mse_percent <- mean(residual_percent^2)
+mean_error <- sqrt(mse)
+mean_error_percent <- sqrt(mse_percent)
+print(mean_error)
+print(mean_error_percent)
 
 # remove outliers
-demand_ciso_clean <- remove_outliers(demand_ciso_clean) 
+demand_ciso <- remove_outliers(demand_ciso)
 
-# recreate linear model
-demand_ciso_model <- lm(data = demand_ciso_clean, Demand_MW ~ Month + Year + Weekday)
-summary(demand_ciso_model)
-# comment on changed R^2, F-stat, p-value, residual standard error
+# redo histograms and scatterplots of variables - only for analysis
 
-# redo histograms and scatterplots of variables
-# look at histograms and scatterplots of variables
-ggplot(data = demand_ciso_clean, aes(x = Year)) + 
+# Time Series
+ggplot(demand_ciso, aes(x = Date, y = Demand_MW)) +
+  geom_line(color = "black") +
+  labs(x = "Year", y = "Demand (MW)", title = "CISO Daily Demand") +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  theme_bw()
+
+# Year Histogram
+ggplot(data = demand_ciso, aes(x = Year)) + 
   geom_histogram(binwidth = 1, color = "black") +
   labs(title = "Year Frequencies", y = "Frequency") +
-  scale_x_continuous(breaks = seq(floor(min(demand_ciso_clean$Year)), ceiling(max(demand_ciso_clean$Year)), by = 1)) + 
+  scale_x_continuous(breaks = seq(floor(min(demand_ciso$Year)), ceiling(max(demand_ciso$Year)), by = 1)) + 
   theme_bw()
 # normal
 
-ggplot(data = demand_ciso_clean, aes(x = Demand_MW)) + 
+# Demand Histogram
+ggplot(data = demand_ciso, aes(x = Demand_MW)) + 
   geom_histogram(color = "black") +
   labs(title = "Demand (MW) Frequencies", y = "Frequency") +
   scale_x_continuous(labels = function(x) format(x, scientific = FALSE)) +  
   theme_bw()
-# slightly left skewed
+# slight improvement
 
-ggplot(data = demand_ciso_clean, aes(x = Month)) +
+# Month Frequencies
+ggplot(data = demand_ciso, aes(x = Month)) +
   geom_bar(color = "black") +
   labs(y = "Frequency", title = "Month Frequency") +
   theme_bw()
 # about the same for each category
 
-ggplot(data = demand_ciso_clean, aes(x = Weekday)) +
+# Weekday Frequencies
+ggplot(data = demand_ciso, aes(x = Weekday)) +
   geom_bar(color = "black") +
   labs(y = "Frequency", title = "Weekday Frequency") +
   theme_bw()
 # about the same for each category
+# these need to be in order of the week if presented
 
 # all looks well as is, let's continue onto collinearity
 # since the F-stat is low and x's appear significant, we can also move on from this
+
+# New Model
+
+# train/test split
+demand_ciso_train <- subset(demand_ciso, demand_ciso$Year <= 2018)
+demand_ciso_test <- subset(demand_ciso, demand_ciso$Year > 2018)
+
+# create model based on the training data
+demand_ciso_model <- lm(data = demand_ciso_train, Demand_MW ~ Month + Year + Weekday)
+summary(demand_ciso_model)
+# comment on changed R^2, F-stat, p-value, residual standard error
 
 # Look at residual plot of final model
 options(scipen = 100)
@@ -195,75 +229,78 @@ plot(residuals(demand_ciso_model) ~ fitted.values(demand_ciso_model),
 # However, we do not have some equal variance since we have a slight megaphone shape
 # This means the equal variance assumption is mostly met (good enough).
 
-# create predictions for the final model 
-demand_ciso_clean$Predictions <- predict(demand_ciso_model)
+# create predictions
+demand_ciso_train$Predictions <- predict(demand_ciso_model, demand_ciso_train)
+demand_ciso_test$Predictions <- predict(demand_ciso_model, demand_ciso_test)
 
-ggplot(demand_ciso_clean) +
+# recombine the data
+demand_ciso <- rbind(demand_ciso_train, demand_ciso_test)
+
+# plot
+ggplot(demand_ciso) +
   geom_line(aes(x = Date, y = Demand_MW, color = "Actual")) +
   geom_line(aes(x = Date, y = Predictions, color = "Predicted")) +
   labs(x = "Year", y = "Demand (MW)", title = "CISO Daily Demand", color = "Demand") +
-  scale_color_manual(values = c("Actual" = "black", "Predicted" = "coral")) +
+  scale_color_manual(values = c("Actual" = "black", "Predicted" = "red")) +
   scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  geom_vline(xintercept = as.numeric(as.Date("2019-01-01")), linetype = "dashed", color = "black") +
+  geom_hline(yintercept = median(demand_ciso$Demand_MW), linetype = "dashed", color = "black") +
   theme_bw()
 
-###########################################################################################
+# residuals and error
+residuals <- demand_ciso_test$Demand_MW - demand_ciso_test$Predictions
+residual_percent <- residuals / demand_ciso_test$Demand_MW
+mse <- mean(residuals^2)
+mse_percent <- mean(residual_percent^2)
+mean_error <- sqrt(mse)
+mean_error_percent <- sqrt(mse_percent)
+print(mean_error)
+print(mean_error_percent)
 
-# IID
 
-demand_iid_clean <- remove_outliers(demand_iid_clean)
-# create linear model
-demand_iid_model <- lm(data = demand_iid_clean, Demand_MW ~ Month + Year + Weekday)
-summary(demand_iid_model)
+
+# Model to Predict the Future
+
+demand_ciso_future <- data.frame(Date = seq.Date(as.Date("2021-01-01"), as.Date("2021-12-31"), by = "day"))
+demand_ciso_future$Year <- as.numeric(format(demand_ciso_future$Date, "%Y"))
+demand_ciso_future$Month <- as.factor(format(demand_ciso_future$Date, "%m"))
+demand_ciso_future$Weekday <- as.factor(weekdays(demand_ciso_future$Date))
+
+# create model based on all the data
+demand_ciso_model_full <- lm(data = demand_ciso, Demand_MW ~ Month + Year + Weekday)
+summary(demand_ciso_model_full)
+# comment on changed R^2, F-stat, p-value, residual standard error
+
+# Look at residual plot of final model
+options(scipen = 100)
+plot(residuals(demand_ciso_model_full) ~ fitted.values(demand_ciso_model_full), 
+     xlab = "Fitted Values",
+     ylab = "Residuals",
+     main = "Residual Plot")
+# In this plot we see random scatter, which is good. This means the linearity 
+# assumption is met. 
+# However, we do not have some equal variance since we have a slight megaphone shape
+# This means the equal variance assumption is mostly met (good enough).
+
 # create predictions
-demand_iid_clean$Predictions <- predict(demand_iid_model)
+demand_ciso_future$Predictions <- predict(demand_ciso_model_full, demand_ciso_future)
 
-ggplot(demand_iid_clean) +
-  geom_line(aes(x = Date, y = Demand_MW, color = "Actual")) +
-  geom_line(aes(x = Date, y = Predictions, color = "Predicted")) +
-  labs(x = "Year", y = "Demand (MW)", title = "IID Daily Demand", color = "Demand") +
-  scale_color_manual(values = c("Actual" = "black", "Predicted" = "coral")) +
+# plot for predictions
+ggplot(demand_ciso_future) +
+  geom_line(aes(x = Date, y = Predictions)) +
+  labs(x = "Year", y = "Predicted Demand (MW)", title = "CISO Predicted Demand", color = "Demand") +
   scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  geom_hline(yintercept = median(demand_ciso_future$Predictions), linetype = "dashed", color = "black") +
   theme_bw()
+
+# figure out what months these are
+# try to split data in low, medium, high
+
+
 
 ###########################################################################################
 
-# LDWP - data jumps from 09/2015 to 01/2017
-
-demand_ldwp_clean <- remove_outliers(demand_ldwp_clean)
-# create linear model
-demand_ldwp_model <- lm(data = demand_ldwp_clean, Demand_MW ~ Month + Year + Weekday)
-summary(demand_ldwp_model)
-# create predictions
-demand_ldwp_clean$Predictions <- predict(demand_ldwp_model)
-
-ggplot(demand_ldwp_clean) +
-  geom_line(aes(x = Date, y = Demand_MW, color = "Actual")) +
-  geom_line(aes(x = Date, y = Predictions, color = "Predicted")) +
-  labs(x = "Year", y = "Demand (MW)", title = "LDWP Daily Demand", color = "Demand") +
-  scale_color_manual(values = c("Actual" = "black", "Predicted" = "coral")) +
-  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
-  theme_bw()
-
-###########################################################################################
-
-# TIDC
-
-demand_tidc_clean <- remove_outliers(demand_tidc_clean)
-# create linear model
-demand_tidc_model <- lm(data = demand_tidc_clean, Demand_MW ~ Month + Year + Weekday)
-summary(demand_tidc_model)
-# create predictions
-demand_tidc_clean$Predictions <- predict(demand_tidc_model)
-
-ggplot(demand_tidc_clean) +
-  geom_line(aes(x = Date, y = Demand_MW, color = "Actual")) +
-  geom_line(aes(x = Date, y = Predictions, color = "Predicted")) +
-  labs(x = "Year", y = "Demand (MW)", title = "LDWP Daily Demand", color = "Demand") +
-  scale_color_manual(values = c("Actual" = "black", "Predicted" = "coral")) +
-  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
-  theme_bw()
-
-###########################################################################################
-
-# could also investigate covariate for interchange
+# Hypothesis testing for overall model (commented on) and invidual variables
+# Confidence Intervals
