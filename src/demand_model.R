@@ -51,7 +51,7 @@ remove_outliers <- function(dataset) {
   
 }
 
-###########################################################################################
+##################################################################################################################
 
 # Time series Plots (unimputed)
 
@@ -86,7 +86,7 @@ ggplot(demand_iid, aes(x = Date, y = Demand_MW)) +
   labs(x = "Year", y = "Demand (MW)", title = "IID Daily Demand") +
   theme_bw()
 
-###########################################################################################
+##################################################################################################################
 
 # CISO Modeling
 
@@ -123,12 +123,14 @@ ggplot(data = demand_ciso, aes(x = Weekday)) +
 # these need to be in order of the week if presented
 
 # Train/Test Split 
+
 # train: <= 2018
 # test: > 2018
 demand_ciso_train <- subset(demand_ciso, demand_ciso$Year <= 2018)
 demand_ciso_test <- subset(demand_ciso, demand_ciso$Year > 2018)
 
 # Baseline Model
+
 demand_ciso_baseline <- lm(data = demand_ciso_train, Demand_MW ~ Month + Year + Weekday)
 summary(demand_ciso_baseline)
 # comment on R^2, F-stat, p-value, residual standard error
@@ -161,7 +163,8 @@ mean_error_percent <- sqrt(mse_percent)
 print(mean_error)
 print(mean_error_percent)
 
-# remove outliers
+# Remove Outliers
+
 demand_ciso <- remove_outliers(demand_ciso)
 
 # redo histograms and scatterplots of variables - only for analysis
@@ -236,18 +239,6 @@ demand_ciso_test$Predictions <- predict(demand_ciso_model, demand_ciso_test)
 # recombine the data
 demand_ciso <- rbind(demand_ciso_train, demand_ciso_test)
 
-# plot
-ggplot(demand_ciso) +
-  geom_line(aes(x = Date, y = Demand_MW, color = "Actual")) +
-  geom_line(aes(x = Date, y = Predictions, color = "Predicted")) +
-  labs(x = "Year", y = "Demand (MW)", title = "CISO Daily Demand", color = "Demand") +
-  scale_color_manual(values = c("Actual" = "black", "Predicted" = "red")) +
-  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  geom_vline(xintercept = as.numeric(as.Date("2019-01-01")), linetype = "dashed", color = "black") +
-  geom_hline(yintercept = median(demand_ciso$Demand_MW), linetype = "dashed", color = "black") +
-  theme_bw()
-
 # residuals and error
 residuals <- demand_ciso_test$Demand_MW - demand_ciso_test$Predictions
 residual_percent <- residuals / demand_ciso_test$Demand_MW
@@ -258,7 +249,34 @@ mean_error_percent <- sqrt(mse_percent)
 print(mean_error)
 print(mean_error_percent)
 
+# plot w/ binary low/high demand
+ggplot(demand_ciso) +
+  geom_line(aes(x = Date, y = Demand_MW, color = "Actual")) +
+  geom_line(aes(x = Date, y = Predictions, color = "Predicted")) +
+  labs(x = "Year", y = "Demand (MW)", title = "CISO Daily Demand", color = "Demand") +
+  scale_color_manual(values = c("Actual" = "black", "Predicted" = "red")) +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
+  scale_x_date(date_breaks = "3 months", date_labels = "%b %Y") +
+  geom_vline(xintercept = as.numeric(as.Date("2019-01-01")), linetype = "dashed", color = "black") +
+  geom_hline(yintercept = median(demand_ciso$Demand_MW), linetype = "dashed", color = "black") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+# plot w/ 3-type low/medium/high demand
+ggplot(demand_ciso) +
+  geom_line(aes(x = Date, y = Demand_MW, color = "Actual")) +
+  geom_line(aes(x = Date, y = Predictions, color = "Predicted")) +
+  labs(x = "Year", y = "Demand (MW)", title = "CISO Daily Demand", color = "Demand") +
+  scale_color_manual(values = c("Actual" = "black", "Predicted" = "red")) +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
+  scale_x_date(date_breaks = "3 months", date_labels = "%b %Y") +
+  geom_vline(xintercept = as.numeric(as.Date("2019-01-01")), linetype = "dashed", color = "black") +
+  geom_hline(yintercept = quantile(demand_ciso$Demand_MW, 1/3), linetype = "dashed", color = "black") +
+  geom_hline(yintercept = quantile(demand_ciso$Demand_MW, 2/3), linetype = "dashed", color = "black") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# NOTE: SUMMER IS MOST IMPORTANT
 
 # Model to Predict the Future
 
@@ -267,7 +285,7 @@ demand_ciso_future$Year <- as.numeric(format(demand_ciso_future$Date, "%Y"))
 demand_ciso_future$Month <- as.factor(format(demand_ciso_future$Date, "%m"))
 demand_ciso_future$Weekday <- as.factor(weekdays(demand_ciso_future$Date))
 
-# create model based on all the data
+# create model based on all the data before 2021
 demand_ciso_model_full <- lm(data = demand_ciso, Demand_MW ~ Month + Year + Weekday)
 summary(demand_ciso_model_full)
 # comment on changed R^2, F-stat, p-value, residual standard error
@@ -291,16 +309,13 @@ ggplot(demand_ciso_future) +
   geom_line(aes(x = Date, y = Predictions)) +
   labs(x = "Year", y = "Predicted Demand (MW)", title = "CISO Predicted Demand", color = "Demand") +
   scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  geom_hline(yintercept = median(demand_ciso_future$Predictions), linetype = "dashed", color = "black") +
-  theme_bw()
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
+  geom_hline(yintercept = quantile(demand_ciso$Demand_MW, 1/3), linetype = "dashed", color = "black") +
+  geom_hline(yintercept = quantile(demand_ciso$Demand_MW, 2/3), linetype = "dashed", color = "black") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# figure out what months these are
-# try to split data in low, medium, high
-
-
-
-###########################################################################################
+##################################################################################################################
 
 # Hypothesis testing for overall model (commented on) and invidual variables
 # Confidence Intervals
