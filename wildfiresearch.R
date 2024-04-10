@@ -282,11 +282,14 @@ ggplot(Weather, aes(x = total_rain_last_month, y = c3_rain_sum, color = fire_tru
 
 Weather$fire_true <- factor(Weather$fire_true, levels = c(0, 1), labels = c("No", "Yes"))
 
-RNGkind(sample.kind = "default")
-set.seed(2291352)
-train.idx <- sample(x = 1:nrow(Weather), size = floor(.8*nrow(Weather)))
-train.df <- Weather[train.idx, ]
-test.df <- Weather[-train.idx, ]
+# RNGkind(sample.kind = "default")
+# set.seed(2291352)
+# train.idx <- sample(x = 1:nrow(Weather), size = floor(.8*nrow(Weather)))
+# train.df <- Weather[train.idx, ]
+# test.df <- Weather[-train.idx, ]
+
+train.df <- subset(Weather, date <= "2019-12-31")
+test.df <- subset(Weather, date > "2019-12-31")
 
 # Remove the "date" column
 train.df <- train.df[, -which(names(train.df) == "date")]
@@ -341,6 +344,11 @@ for (rep in 1:n_reps){
 }
 keeps2
 
+
+
+
+
+
 #calculate mean for each m value
 keeps3 <- keeps2 %>% 
   group_by(m) %>% 
@@ -360,15 +368,45 @@ ggplot(data = keeps3) +
 
 
 
-#fit final forest (mtry 2 was the best as we saw in the plot)
+#fit final forest (mtry 7 was the best as we saw in the plot)
 final_forest <- randomForest(fire_true ~ .,
                              data = train.df,
                              ntree = 1000, #fit B = 1000 trees
-                             mtry = 2, #randomly sample 2 x's at each tree
+                             mtry = 7, #randomly sample 2 x's at each tree
                              importance = TRUE) #helps identitify important predictors
 final_forest
 
 
+
+#I only want to predict for 2020-01-01 through
+new.data.frame <- subset(Weather, date > "2019-12-31")
+
+new.data.frame$preds <- predict(final_forest, new.data.frame)
+
+
+# I need to to "use" 2020 weather data as the same thing for 2021
+# so the predictions that the model think will happen in 2020 are the exact same days for 2021
+
+#These are those days for "2021"
+
+
+# Loop through the rows of the dataframe
+ for (i in 1:nrow(new.data.frame)) {
+       # Check if the value in the 'preds' column is "Yes"
+         if (new.data.frame$preds[i] == "Yes") {
+               # Print the corresponding value in the 'date' column
+                 print(new.data.frame$date[i])
+           }
+   }
+
+# "2020-06-07"
+# "2020-06-08"
+# "2020-07-12"
+# "2020-08-15"
+# "2020-08-16"
+# "2020-08-17"
+# "2020-08-18"
+# "2020-08-19"
 
 ########### INTERPRET ####################
 
@@ -377,6 +415,7 @@ varImpPlot(final_forest, type = 1)
 
 
 #################### RocCurve #####################
+
 
 pi_hat <- predict(final_forest, test.df, type = "prob")[,"Yes"] #note positive event
 
@@ -394,25 +433,37 @@ test.df$forest_pred <- ifelse(pi_hat > pi_star, "Yes", "No")
 
 
 
-#################### Model work #############################
+############################# Time Series GGPlots ####################################
 
-# Create the linear regression model
-Weather$fire_true <- ifelse(Weather$fire_true == "Yes", 1, 0)
+pi_hat <- predict(final_forest, Weather, type = "prob")[,"Yes"] #note positive event
 
-####CHANGE NAMES
-m1 <- glm(fire_true ~ Weather$c3_feelslike_max,
-          data = Weather, family = binomial(link = "logit"))
-AIC(m1)
+Weather$forest_pred <- ifelse(pi_hat > pi_star, "Yes", "No")
 
 
-m2 <- glm(fire_true ~ c3_feelslike_max, + c3_mean_temp,
-          data = Weather, family = binomial(link = "logit"))
-AIC(m2)
+fire_dates <- Weather$date[Weather$fire_true == "Yes"]
+pred_dates <- Weather$date[Weather$forest_pred == "Yes"]
 
 
-############################
-# NEXT STEPS:
-# Find a way to get future weather and predict whether a fire will happen using my model
+
+# Plot
+ggplot() +
+  geom_line( aes(x = date, y = c3_feelslike_max), data = Weather) +
+  geom_point(aes(x = date, y = c3_feelslike_max), color = "red", data = subset(Weather, fire_true == 1)) +
+  geom_vline(xintercept = as.numeric(as.Date(pred_dates)), color = "grey", alpha = 0.4) +
+  labs(title = "Time Series of c3_feelslike_max with Predictions",
+       x = "Date", y = "c3_feelslike_max") +
+  theme_minimal()
+
+
+ggplot(Weather, aes(x = date, y = total_rain_last_month)) +
+  geom_line() +
+  geom_vline(xintercept = as.numeric(as.Date(fire_dates)), color = "red", alpha = 0.8) +
+  geom_vline(xintercept = as.numeric(as.Date(pred_dates)), color = "grey", alpha = 0.6) +
+  labs(title = "Time Series of total_rain_last_month with Predictions",
+       x = "Date", y = "total_rain_last_month") +
+  theme_minimal()
+
+
 
 
 
