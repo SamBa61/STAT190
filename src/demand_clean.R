@@ -25,7 +25,7 @@ colnames(demand_clean) <- c("Balancing_Authority", "Date", "Demand_MW", "Net_Gen
 
 # check field data types to ensure they all work for future modeling
 
-str(demand_clean)
+# str(demand_clean)
 
 # Date is a character -> make it date
 # Balancing_Authority is a character -> make it a factor
@@ -64,16 +64,18 @@ demand_clean$Weekday <- as.factor(weekdays(demand_clean$Date))
 # Create separate data frames for each region
 
 # pull different balancing authorities into list
-balancing_authority_list <- c("BANC", "TIDC", "CISO", "LDWP", "IID")
+balancing_authority_list <- c("IID")
 
-# for loop iterate through list and create model for each
+# empty demand_balancing_authority list
+demand_balancing_authority <- list()
+
+# for loop to iterate through list and create subset for each balancing authority
 # loop also creates a binary and 3-type categorical demand columns
 for (balancing_authority in balancing_authority_list) {
-  subset_name <- paste0("demand_", tolower(balancing_authority))
-  subset_data <- assign(subset_name, subset(demand_clean, Balancing_Authority == balancing_authority))
+  subset_data <- subset(demand_clean, Balancing_Authority == balancing_authority)
   subset_data$Demand_Category_Bin <- as.factor(ifelse(subset_data$Demand_MW >= median(subset_data$Demand_MW), "High", "Low"))
   subset_data$Demand_Category <- as.factor(cut(subset_data$Demand_MW, breaks = c(min(subset_data$Demand_MW), quantile(subset_data$Demand_MW, 1/3), quantile(subset_data$Demand_MW, 2/3), max(subset_data$Demand_MW)), labels = c("Low", "Medium", "High")))
-  assign(subset_name, subset_data)
+  demand_balancing_authority[[balancing_authority]] <- subset_data
 }
 
 ##################################################################################################################
