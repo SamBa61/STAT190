@@ -60,6 +60,7 @@ demand_modeling <- function(demand_dataset) {
     geom_line(color = "black") +
     labs(x = "Year", y = "Demand (MW)", title = "Daily Demand") +
     scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+    scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
     theme_bw()
   
   # remove outliers
@@ -70,6 +71,7 @@ demand_modeling <- function(demand_dataset) {
     geom_line(color = "black") +
     labs(x = "Year", y = "Demand (MW)", title = "Daily Demand") +
     scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+    scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
     theme_bw()
   
   # train/test split
@@ -140,10 +142,10 @@ for (name in names(demand_balancing_authority)) {
   result <- demand_modeling(demand_balancing_authority[[name]])
   
   # Assign the result to a variable with a unique name
-  assign(paste0("results_", name), result, envir = .GlobalEnv)
+  assign(paste0("results_", name), result)
 }
 
+# saveRDS to save the lists to GitHub
 
-
-
-
+results_CISO[[8]]
+summary(results_CISO[[6]])

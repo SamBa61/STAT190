@@ -64,7 +64,7 @@ demand_clean$Weekday <- as.factor(weekdays(demand_clean$Date))
 # Create separate data frames for each region
 
 # pull different balancing authorities into list
-balancing_authority_list <- c("IID")
+balancing_authority_list <- c("BANC", "CISO", "LDWP", "IID", "TIDC")
 
 # empty demand_balancing_authority list
 demand_balancing_authority <- list()
@@ -80,3 +80,5 @@ for (balancing_authority in balancing_authority_list) {
 
 ##################################################################################################################
 
+# take care of BANC issues here!
+# on BANC, just remove those dates or remove and reimpute with median for that time period
