@@ -81,4 +81,11 @@ for (balancing_authority in balancing_authority_list) {
 ##################################################################################################################
 
 # take care of BANC issues here!
-# on BANC, just remove those dates or remove and reimpute with median for that time period
+# on BANC, just remove bad dates 
+# or remove and reimpute with median for that time period
+demand_balancing_authority[["BANC"]] <- subset(demand_balancing_authority[["BANC"]], !(demand_balancing_authority[["BANC"]]$Date >= as.Date("2019-04-07") & demand_balancing_authority[["BANC"]]$Date <= as.Date("2019-05-21")))
+demand_balancing_authority[["BANC"]] <- subset(demand_balancing_authority[["BANC"]], !(demand_balancing_authority[["BANC"]]$Date == as.Date("2019-07-24")))
+
+
+
+
