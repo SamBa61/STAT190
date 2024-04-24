@@ -88,6 +88,18 @@ demand_modeling <- function(demand_dataset) {
   # recombine the data
   demand_dataset <- rbind(demand_dataset_train, demand_dataset_test)
   
+  # R^2 output
+  demand_model_1_summary <- summary(demand_model_1)
+  model_1_r_squared <- demand_model_1_summary$r.squared
+  
+  # residuals, mse, rmse, mean error
+  residuals <- demand_dataset$Demand_MW - demand_dataset$Predictions
+  residual_percent <- residuals / demand_dataset$Demand_MW
+  mse <- mean(residuals^2)
+  mse_percent <- mean(residual_percent^2)
+  rmse <- sqrt(mse)
+  rmse_percent <- sqrt(mse_percent)
+  
   # plot w/ 3-type low/medium/high demand
   model_1_results <- ggplot(demand_dataset) +
     geom_line(aes(x = Date, y = Demand_MW, color = "Actual")) +
@@ -127,7 +139,7 @@ demand_modeling <- function(demand_dataset) {
 
   # return list of data, models, and plots
   return(list(og_demand_time_series, demand_time_series, demand_model_1, demand_dataset, model_1_results,
-              demand_model_2, demand_future, model_2_results))
+              demand_model_2, demand_future, model_2_results, model_1_r_squared, rmse, rmse_percent))
 
 }
 
