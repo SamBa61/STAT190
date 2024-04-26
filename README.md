@@ -28,8 +28,7 @@ Trello: https://trello.com/invite/datacapstone3/ATTIaec2913b7e5c31b0741bf3e3937f
     5) create predictive model for demand
  - DIBA = directly interconnected balancing authority
 
-# Wildfire
-# Wildfire
+# Wildfire & Weather Data
 Wildfire Data:
 - Big wildfire data source: https://www.kaggle.com/datasets/behroozsohrabi/us-wildfire-records-6th-edition?select=data.csv
 
