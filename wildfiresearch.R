@@ -171,8 +171,6 @@ Weather$total_rain_last_month <- rowSums(Weather[, grepl("_rain_sum", names(Weat
 CISO_wild <- all_CA_wild %>%
   filter(LATITUDE >= 36.4 & LATITUDE <= 37.8)
 
-# & LONGITUDE <= -100.4 & LONGITUDE >= -130.5
-
 
 
 
@@ -195,87 +193,6 @@ print(num_duplicates)
 
 
 
-
-
-#################### HELPFUL MAPS ###################
-
-california_map <- map_data("state", region = "california") # Get the map data for California
-
-# Get the map data for California counties
-california_counties <- map_data("county", region = "california")
-
-# Plot the map of California with county lines
-ggplot() +
-  geom_polygon(data = california_map, aes(x = long, y = lat, group = group), 
-               fill = "lightblue", color = "black") +
-  geom_polygon(data = california_counties, aes(x = long, y = lat, group = group), 
-               fill = NA, color = "black", alpha = 0.3) +  # Add county lines
-  coord_fixed(1.3) +  # Aspect ratio adjustment
-  theme_void() +      # Remove axis and gridlines
-  theme(legend.position = "none") + # Remove legend
-  labs(title = "Map of California with Wildfire Data") +
-  
-  # Add points to the map based on latitude and longitude from the 'wild' dataset
-  geom_point(data = all_CA_wild, aes(x = LONGITUDE, y = LATITUDE), 
-             color = "red", size = 1)
-
-
-########### ADD CISO LATITUDE LINES ##################
-
-
-# Get the map data for California
-california_map <- map_data("state", region = "california")
-
-# Get the map data for California counties
-california_counties <- map_data("county", region = "california")
-
-# Filter the data to include only Merced County
-merced_county <- subset(california_counties, grepl("modoc", subregion))
-
-# Filter wildfire data to include only points in Merced County
-merced_wild <- subset(all_CA_wild, LONGITUDE >= min(merced_county$long) & LONGITUDE <= max(merced_county$long) &
-                        LATITUDE >= min(merced_county$lat) & LATITUDE <= max(merced_county$lat))
-
-# Plot the map of California with only Merced County and red points in Merced County
-ggplot() +
-  geom_polygon(data = california_map, aes(x = long, y = lat, group = group), 
-               fill = "lightblue", color = "black") +
-  geom_polygon(data = merced_county, aes(x = long, y = lat, group = group), 
-               fill = NA, color = "black", alpha = 0.7) +  # Add Merced County
-  geom_point(data = merced_wild, aes(x = LONGITUDE, y = LATITUDE), 
-             color = "red", size = 1) +  # Add red points in Merced County
-  coord_fixed(1.3) +  # Aspect ratio adjustment
-  theme_void() +      # Remove axis and gridlines
-  theme(legend.position = "none") + # Remove legend
-  labs(title = "Modoc County in California Wildfire Data") 
-
-
-
-
-########### Helpful tables #############
-max(onlybigwildfires$DISCOVERY_DATE)
-
-table(onlybigwildfires$STATE)
-
-table(all_CA_wild$NWCG_CAUSE_CLASSIFICATION)
-
-table(all_CA_wild$NWCG_GENERAL_CAUSE)
-
-#######################################
-
-
-#################### Meaningful Visuals ###################################
-
-
-ggplot(Weather, aes(x = total_rain_last_month, y = c3_rain_sum, color = fire_true)) +
-  geom_point() +
-  labs(x = "total_rain_last_month", y = "c3_rain_sum", color = "Fire True") +
-  scale_color_manual(values = c("Yes" = "black", "No" = "red")) +
-  theme_minimal()
-
-
-
-
 ############### RANDOM FOREST!#########################
 
 #DATA Prep
@@ -293,7 +210,6 @@ test.df <- subset(Weather, date > "2019-12-31")
 
 # Remove the "date" column
 train.df <- train.df[, -which(names(train.df) == "date")]
-test.df <- test.df[, -which(names(test.df) == "date")]
 
 
 #403 test 1608 train
@@ -368,45 +284,14 @@ ggplot(data = keeps3) +
 
 
 
-#fit final forest (mtry 7 was the best as we saw in the plot)
+#fit final forest (mtry 2 was the best as we saw in the plot)
 final_forest <- randomForest(fire_true ~ .,
                              data = train.df,
                              ntree = 1000, #fit B = 1000 trees
-                             mtry = 7, #randomly sample 2 x's at each tree
+                             mtry = 2, #randomly sample 2 x's at each tree
                              importance = TRUE) #helps identitify important predictors
 final_forest
 
-
-
-#I only want to predict for 2020-01-01 through
-new.data.frame <- subset(Weather, date > "2019-12-31")
-
-new.data.frame$preds <- predict(final_forest, new.data.frame)
-
-
-# I need to to "use" 2020 weather data as the same thing for 2021
-# so the predictions that the model think will happen in 2020 are the exact same days for 2021
-
-#These are those days for "2021"
-
-
-# Loop through the rows of the dataframe
- for (i in 1:nrow(new.data.frame)) {
-       # Check if the value in the 'preds' column is "Yes"
-         if (new.data.frame$preds[i] == "Yes") {
-               # Print the corresponding value in the 'date' column
-                 print(new.data.frame$date[i])
-           }
-   }
-
-# "2020-06-07"
-# "2020-06-08"
-# "2020-07-12"
-# "2020-08-15"
-# "2020-08-16"
-# "2020-08-17"
-# "2020-08-18"
-# "2020-08-19"
 
 ########### INTERPRET ####################
 
@@ -423,13 +308,57 @@ rocCurve <- roc(response = test.df$fire_true,
                 predictor = pi_hat,
                 levels = c("No", "Yes")) #negative, then positive
 
-plot(rocCurve, print.thres = TRUE, print.auc = TRUE)
+#ROC CURVE PLOT with ggPlot
+data.frame(sensitivities = rocCurve$sensitivities,
+           specificities = rocCurve$specificities)%>%
+  arrange(sensitivities) %>%
+ggplot() + 
+  geom_line(aes(x = 1-specificities, y =sensitivities )) +
+  geom_label(aes(x = .25, y = .9, label = ".170 (0.757, 0.917")) +
+  theme_bw() +
+  labs(x = "False Positive Rate", y = "True Positive Rate")
+
+
 
 
 pi_star <- coords(rocCurve, "best", ret = "threshold")$threshold[1]
 pi_star
 
 test.df$forest_pred <- ifelse(pi_hat > pi_star, "Yes", "No")
+
+test.df$forest_pred_prob <- predict(final_forest, test.df, type = "prob")[,2]
+
+Weather$forest_pred_prob <- predict(final_forest, Weather, type = "prob")[,2]
+
+
+# Plot with date as x axis, forest_pred_prob as contionus line
+# assumption that the weather was the same
+
+ggplot(test.df, aes(x = date, y = forest_pred_prob)) +
+  geom_line() +  # Continuous line for forest_pred_prob
+  geom_point(data = subset(test.df, forest_pred == "Yes"), color = "red") +  # Dots where forest_pred == "Yes"
+  labs(x = "Date", y = "Forest Prediction Probability") +  # Labels for axes
+  theme_minimal()  # Minimalist theme
+
+
+
+
+pred_dates <- subset(test.df, forest_pred == "Yes")$date
+
+ggplot(test.df, aes(x = date, y = forest_pred_prob)) +
+  geom_line() +  # Continuous line for forest_pred_prob
+  geom_vline(xintercept = as.numeric(as.Date(pred_dates)), color = "grey", alpha = 0.6) +  # Grey vertical lines
+  labs(
+    title = "Predictions for 2021",  # Add title
+    x = "Month",  # Update x-axis label
+    y = "Forest Prediction Probability"  # Y-axis label
+  ) +
+  scale_x_date(date_breaks = "1 month", date_labels = "%b") +  # Show only the month in short form
+  theme_minimal()  # Minimalist theme
+
+
+
+
 
 
 
@@ -445,25 +374,93 @@ pred_dates <- Weather$date[Weather$forest_pred == "Yes"]
 
 
 
-# Plot
 ggplot() +
   geom_line( aes(x = date, y = c3_feelslike_max), data = Weather) +
-  geom_point(aes(x = date, y = c3_feelslike_max), color = "red", data = subset(Weather, fire_true == 1)) +
+  geom_point(aes(x = date, y = c3_feelslike_max), color = "red", data = subset(Weather, fire_true == "Yes")) +
   geom_vline(xintercept = as.numeric(as.Date(pred_dates)), color = "grey", alpha = 0.4) +
   labs(title = "Time Series of c3_feelslike_max with Predictions",
        x = "Date", y = "c3_feelslike_max") +
   theme_minimal()
 
 
-ggplot(Weather, aes(x = date, y = total_rain_last_month)) +
-  geom_line() +
-  geom_vline(xintercept = as.numeric(as.Date(fire_dates)), color = "red", alpha = 0.8) +
-  geom_vline(xintercept = as.numeric(as.Date(pred_dates)), color = "grey", alpha = 0.6) +
-  labs(title = "Time Series of total_rain_last_month with Predictions",
-       x = "Date", y = "total_rain_last_month") +
+
+
+#################### HELPFUL MAPS ###################
+
+california_map <- map_data("state", region = "california") # Get the map data for California
+
+# Get the map data for California counties
+california_counties <- map_data("county", region = "california")
+
+# Plot the map of California with county lines
+ggplot() +
+  geom_polygon(data = california_map, aes(x = long, y = lat, group = group), 
+               fill = "lightblue", color = "black") +
+  geom_polygon(data = california_counties, aes(x = long, y = lat, group = group), 
+               fill = NA, color = "black", alpha = 0.3) +  # Add county lines
+  coord_fixed(1.3) +  # Aspect ratio adjustment
+  theme_void() +      # Remove axis and gridlines
+  theme(legend.position = "none") + # Remove legend
+  labs(title = "Map of California with Wildfire Data") +
+  
+  # Add points to the map based on latitude and longitude from the 'wild' dataset
+  geom_point(data = all_CA_wild, aes(x = LONGITUDE, y = LATITUDE), 
+             color = "red", size = 1)
+
+
+########### ADD CISO LATITUDE LINES ##################
+
+
+# Get the map data for California
+california_map <- map_data("state", region = "california")
+
+# Get the map data for California counties
+california_counties <- map_data("county", region = "california")
+
+# Filter the data to include only Merced County
+merced_county <- subset(california_counties, grepl("modoc", subregion))
+
+# Filter wildfire data to include only points in Merced County
+merced_wild <- subset(all_CA_wild, LONGITUDE >= min(merced_county$long) & LONGITUDE <= max(merced_county$long) &
+                        LATITUDE >= min(merced_county$lat) & LATITUDE <= max(merced_county$lat))
+
+# Plot the map of California with only Merced County and red points in Merced County
+ggplot() +
+  geom_polygon(data = california_map, aes(x = long, y = lat, group = group), 
+               fill = "lightblue", color = "black") +
+  geom_polygon(data = merced_county, aes(x = long, y = lat, group = group), 
+               fill = NA, color = "black", alpha = 0.7) +  # Add Merced County
+  geom_point(data = merced_wild, aes(x = LONGITUDE, y = LATITUDE), 
+             color = "red", size = 1) +  # Add red points in Merced County
+  coord_fixed(1.3) +  # Aspect ratio adjustment
+  theme_void() +      # Remove axis and gridlines
+  theme(legend.position = "none") + # Remove legend
+  labs(title = "Modoc County in California Wildfire Data") 
+
+
+
+
+########### Helpful tables #############
+max(onlybigwildfires$DISCOVERY_DATE)
+
+table(onlybigwildfires$STATE)
+
+table(all_CA_wild$NWCG_CAUSE_CLASSIFICATION)
+
+table(all_CA_wild$NWCG_GENERAL_CAUSE)
+
+
+#######################################
+
+
+#################### Meaningful Visuals ###################################
+
+
+ggplot(Weather, aes(x = total_rain_last_month, y = c3_rain_sum, color = fire_true)) +
+  geom_point() +
+  labs(x = "total_rain_last_month", y = "c3_rain_sum", color = "Fire True") +
+  scale_color_manual(values = c("Yes" = "black", "No" = "red")) +
   theme_minimal()
-
-
 
 
 
