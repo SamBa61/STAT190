@@ -295,7 +295,8 @@ final_forest
 
 ########### INTERPRET ####################
 
-varImpPlot(final_forest, type = 1)
+r3_VIPlot.rds <- varImpPlot(final_forest, type = 1)
+saveRDS(r3_VIPlot.rds, file = "/Users/isaac/STAT190/r3_VIPlot.rds")
 
 
 
@@ -309,7 +310,7 @@ rocCurve <- roc(response = test.df$fire_true,
                 levels = c("No", "Yes")) #negative, then positive
 
 #ROC CURVE PLOT with ggPlot
-data.frame(sensitivities = rocCurve$sensitivities,
+r3_ggROC <- data.frame(sensitivities = rocCurve$sensitivities,
            specificities = rocCurve$specificities)%>%
   arrange(sensitivities) %>%
 ggplot() + 
@@ -317,7 +318,7 @@ ggplot() +
   geom_label(aes(x = .25, y = .9, label = ".170 (0.757, 0.917")) +
   theme_bw() +
   labs(x = "False Positive Rate", y = "True Positive Rate")
-
+saveRDS(r3_ggROC, file = "C:/Users/isaac/STAT190/r3_ggROC.rds")
 
 
 
@@ -331,18 +332,20 @@ test.df$forest_pred_prob <- predict(final_forest, test.df, type = "prob")[,2]
 Weather$forest_pred_prob <- predict(final_forest, Weather, type = "prob")[,2]
 
 
-# Plot with date as x axis, forest_pred_prob as contionus line
+# Plot with date as x axis, forest_pred_prob as continuous line
 # assumption that the weather was the same
 
-ggplot(test.df, aes(x = date, y = forest_pred_prob)) +
+#RED DOT PREDICTIONS
+
+r3_predictions <- ggplot(test.df, aes(x = date, y = forest_pred_prob)) +
   geom_line() +  # Continuous line for forest_pred_prob
   geom_point(data = subset(test.df, forest_pred == "Yes"), color = "red") +  # Dots where forest_pred == "Yes"
   labs(x = "Date", y = "Forest Prediction Probability") +  # Labels for axes
   theme_minimal()  # Minimalist theme
+saveRDS(r3_predictions, file = "C:/Users/isaac/STAT190/r3_predictions.rds")
 
 
-
-
+#GREY LINE PREDICTIONS
 pred_dates <- subset(test.df, forest_pred == "Yes")$date
 
 ggplot(test.df, aes(x = date, y = forest_pred_prob)) +
@@ -374,14 +377,14 @@ pred_dates <- Weather$date[Weather$forest_pred == "Yes"]
 
 
 
-ggplot() +
+r3_ImportantVariable <- ggplot() +
   geom_line( aes(x = date, y = c3_feelslike_max), data = Weather) +
   geom_point(aes(x = date, y = c3_feelslike_max), color = "red", data = subset(Weather, fire_true == "Yes")) +
   geom_vline(xintercept = as.numeric(as.Date(pred_dates)), color = "grey", alpha = 0.4) +
   labs(title = "Time Series of c3_feelslike_max with Predictions",
        x = "Date", y = "c3_feelslike_max") +
   theme_minimal()
-
+saveRDS(r3_ImportantVariable, file = "C:/Users/isaac/STAT190/r3_ImportantVariable.rds")
 
 
 
