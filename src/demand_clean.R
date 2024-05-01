@@ -1,4 +1,4 @@
-# run the demand data pull (might have to change link)
+# run the demand data pull
 
 source("/Users/sambasala/Desktop/STAT 190/DataCapstone/src/demand_pull_raw.R")
 
@@ -70,22 +70,15 @@ balancing_authority_list <- c("BANC", "CISO", "LDWP", "IID", "TIDC")
 demand_balancing_authority <- list()
 
 # for loop to iterate through list and create subset for each balancing authority
-# loop also creates a binary and 3-type categorical demand columns
 for (balancing_authority in balancing_authority_list) {
   subset_data <- subset(demand_clean, Balancing_Authority == balancing_authority)
-  subset_data$Demand_Category_Bin <- as.factor(ifelse(subset_data$Demand_MW >= median(subset_data$Demand_MW), "High", "Low"))
-  subset_data$Demand_Category <- as.factor(cut(subset_data$Demand_MW, breaks = c(min(subset_data$Demand_MW), quantile(subset_data$Demand_MW, 1/3), quantile(subset_data$Demand_MW, 2/3), max(subset_data$Demand_MW)), labels = c("Low", "Medium", "High")))
   demand_balancing_authority[[balancing_authority]] <- subset_data
 }
 
 ##################################################################################################################
 
-# take care of BANC issues here!
-# on BANC, just remove bad dates 
-# or remove and reimpute with median for that time period
+# the BANC balancing authority has dates with demand values that are very unusual/extreme
+# we chose to remove the range of dates containing these demand values to improve our model later
+# it's understood that these demand values rarely occur
 demand_balancing_authority[["BANC"]] <- subset(demand_balancing_authority[["BANC"]], !(demand_balancing_authority[["BANC"]]$Date >= as.Date("2019-04-07") & demand_balancing_authority[["BANC"]]$Date <= as.Date("2019-05-21")))
 demand_balancing_authority[["BANC"]] <- subset(demand_balancing_authority[["BANC"]], !(demand_balancing_authority[["BANC"]]$Date == as.Date("2019-07-24")))
-
-
-
-
