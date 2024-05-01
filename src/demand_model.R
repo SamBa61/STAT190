@@ -122,13 +122,13 @@ demand_modeling <- function(demand_dataset) {
   model_1_results <- ggplot(demand_dataset) +
     geom_line(aes(x = Date, y = Demand_MW, color = "Actual")) +
     geom_line(aes(x = Date, y = Predictions, color = "Predicted")) +
-    labs(x = "Month and Year", y = "Energy Demand (MW)", title = "Daily Energy Demand: Actual vs. Predicted", color = "Demand") +
+    labs(x = "Month and Year", y = "Energy Demand (MW)", title = "Daily Energy Demand: Actual vs. Predicted", color = "Energy Demand") +
     scale_color_manual(values = c("Actual" = "black", "Predicted" = "red")) +
     scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
     scale_x_date(date_breaks = "3 months", date_labels = "%b %Y") +
-    geom_vline(xintercept = as.numeric(as.Date("2019-01-01")), linetype = "dashed", color = "gray") +
-    geom_hline(yintercept = quantile(demand_dataset$Demand_MW, 1/3), linetype = "dashed", color = "gray") +
-    geom_hline(yintercept = quantile(demand_dataset$Demand_MW, 2/3), linetype = "dashed", color = "gray") +
+    geom_vline(xintercept = as.numeric(as.Date("2019-01-01")), linetype = "dashed", color = "black") +
+    geom_hline(yintercept = quantile(demand_dataset$Demand_MW, 1/3), linetype = "dashed", color = "black") +
+    geom_hline(yintercept = quantile(demand_dataset$Demand_MW, 2/3), linetype = "dashed", color = "black") +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   
@@ -153,8 +153,8 @@ demand_modeling <- function(demand_dataset) {
     labs(x = "Month and Year", y = "Predicted Energy Demand (MW)", title = "2021 Daily Energy Demand Predictions", color = "Demand") +
     scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +  
     scale_x_date(date_breaks = "1 month", date_labels = "%b %Y") +
-    geom_hline(yintercept = quantile(demand_dataset$Demand_MW, 1/3), linetype = "dashed", color = "gray") +
-    geom_hline(yintercept = quantile(demand_dataset$Demand_MW, 2/3), linetype = "dashed", color = "gray") +
+    geom_hline(yintercept = quantile(demand_dataset$Demand_MW, 1/3), linetype = "dashed", color = "black") +
+    geom_hline(yintercept = quantile(demand_dataset$Demand_MW, 2/3), linetype = "dashed", color = "black") +
     theme_bw()
   
   # return the list of data, models, and plots needed for the R Shiny dashboard
