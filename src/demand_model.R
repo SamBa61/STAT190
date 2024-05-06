@@ -169,18 +169,18 @@ for (name in names(demand_balancing_authority)) {
 }
 
 # Use saveRDS() to save the result variables for each balancing authority as RDSs to the GitHub output
-# saveRDS(results_BANC, file = "/Users/sambasala/Desktop/STAT 190/DataCapstone/output/banc_results.rds")
-# # output to console that everything worked
-# cat("BANC results saved successfully\n")
-# 
-# saveRDS(results_CISO, file = "/Users/sambasala/Desktop/STAT 190/DataCapstone/output/ciso_results.rds")
-# cat("CISO results saved successfully\n")
-# 
-# saveRDS(results_IID, file = "/Users/sambasala/Desktop/STAT 190/DataCapstone/output/iid_results.rds")
-# cat("IID results saved successfully\n")
-# 
-# saveRDS(results_LDWP, file = "/Users/sambasala/Desktop/STAT 190/DataCapstone/output/ldwp_results.rds")
-# cat("LWDP results saved successfully\n")
-# 
-# saveRDS(results_TIDC, file = "/Users/sambasala/Desktop/STAT 190/DataCapstone/output/tidc_results.rds")
-# cat("TIDC results saved successfully\n")
+saveRDS(results_BANC, file = "/Users/sambasala/Desktop/STAT 190/DataCapstone/output/banc_results.rds")
+# output to console that everything worked
+cat("BANC results saved successfully\n")
+
+saveRDS(results_CISO, file = "/Users/sambasala/Desktop/STAT 190/DataCapstone/output/ciso_results.rds")
+cat("CISO results saved successfully\n")
+
+saveRDS(results_IID, file = "/Users/sambasala/Desktop/STAT 190/DataCapstone/output/iid_results.rds")
+cat("IID results saved successfully\n")
+
+saveRDS(results_LDWP, file = "/Users/sambasala/Desktop/STAT 190/DataCapstone/output/ldwp_results.rds")
+cat("LWDP results saved successfully\n")
+
+saveRDS(results_TIDC, file = "/Users/sambasala/Desktop/STAT 190/DataCapstone/output/tidc_results.rds")
+cat("TIDC results saved successfully\n")
