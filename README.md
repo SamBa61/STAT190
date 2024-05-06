@@ -1,4 +1,6 @@
 # Wildfire & Weather Data
+R Verison - 2023.12.1
+
 Packages:
 - library(maps) #for the California map
 - library(mapdata) #for the California map data
