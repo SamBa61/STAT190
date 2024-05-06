@@ -17,6 +17,9 @@ Where are the places (regions) that are shrinking/growing in grid demand and are
  - DIBA = directly interconnected balancing authority
 
 # Wildfire & Weather Data
+
+For Wildfire R Verison - 2023.12.1
+
 Packages:
 - library(maps) #for the California map
 - library(mapdata) #for the California map data
