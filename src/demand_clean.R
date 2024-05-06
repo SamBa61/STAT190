@@ -1,9 +1,3 @@
-# run the demand data pull
-
-source("/Users/sambasala/Desktop/STAT 190/DataCapstone/src/demand_pull_raw.R")
-
-##################################################################################################################
-
 # load in libraries
 
 library(lubridate) # for parsing and manipulating dates in an easier way
