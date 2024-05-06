@@ -18,16 +18,16 @@ Where are the places (regions) that are shrinking/growing in grid demand and are
 
 # Wildfire & Weather Data
 Packages:
-library(maps) #for the California map
-library(mapdata) #for the California map data
-library(ggplot2) #for our ggplots, which is most of them
-library(dplyr) #part of tidyverse for data manipulation
-library(rpart) #fitting classification trees
-library(rpart.plot) #plotting classification trees
-library(pROC) #for creating ROC curves
-library(randomForest) #for random Forest modeling
-library(lubridate) # for dates and times
-library(tidyverse) #for data manipulation
+- library(maps) #for the California map
+- library(mapdata) #for the California map data
+- library(ggplot2) #for our ggplots, which is most of them
+- library(dplyr) #part of tidyverse for data manipulation
+- library(rpart) #fitting classification trees
+- library(rpart.plot) #plotting classification trees
+- library(pROC) #for creating ROC curves
+- library(randomForest) #for random Forest modeling
+- library(lubridate) # for dates and times
+- library(tidyverse) #for data manipulation
 
 Wildfire Data:
 - Big wildfire data source: https://www.kaggle.com/datasets/behroozsohrabi/us-wildfire-records-6th-edition?select=data.csv
