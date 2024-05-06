@@ -2,16 +2,16 @@ rm(list = ls())
 
 
 #load packages
-library(maps) 
-library(mapdata)
-library(ggplot2)
-library(dplyr)
+library(maps) #for the California map
+library(mapdata) #for the California map data
+library(ggplot2) #for our ggplots, which is most of them
+library(dplyr) #part of tidyverse for data manipulation
 library(rpart) #fitting classification trees
 library(rpart.plot) #plotting classification trees
 library(pROC) #for creating ROC curves
-library(randomForest)
-library(lubridate)
-library(tidyverse)
+library(randomForest) #for random Forest modeling
+library(lubridate) # for dates and times
+library(tidyverse) #for data manipulation
 
 
 
@@ -341,7 +341,9 @@ r3_predictions <- ggplot(test.df, aes(x = date, y = forest_pred_prob)) +
   geom_line() +  # Continuous line for forest_pred_prob
   geom_point(data = subset(test.df, forest_pred == "Yes"), color = "red") +  # Dots where forest_pred == "Yes"
   labs(x = "Date", y = "Forest Prediction Probability") +  # Labels for axes
-  theme_minimal()  # Minimalist theme
+  ggtitle("Predictions for 2021") +  # Adding the title
+  theme_minimal() +  # Minimalist theme
+  scale_x_date(date_labels = "%b") #only show month on axis
 saveRDS(r3_predictions, file = "C:/Users/isaac/STAT190/r3_predictions.rds")
 
 
