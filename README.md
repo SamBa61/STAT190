@@ -19,6 +19,8 @@ Wildfire Data:
     a. Download data.csv on 2.3 Million US Wildfires (1992-2020) 6th Edition
 
 Weather Data:
+- If you don't want to go through the website to download the weather data the csv's are in Isaac's branch
+
 - Source: https://open-meteo.com/en/docs/historical-weather-api#latitude=36.7477&longitude=-119.7724&hourly=&daily=weather_code,temperature_2m_max,temperature_2m_min,temperature_2m_mean,apparent_temperature_max,apparent_temperature_min,apparent_temperature_mean,daylight_duration,sunshine_duration,precipitation_sum,rain_sum,snowfall_sum,precipitation_hours,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,shortwave_radiation_sum,et0_fao_evapotranspiration&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FLos_Angeles
 
 On the website you type in the city or the longitude and latitude of your 5 points
