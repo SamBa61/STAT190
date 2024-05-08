@@ -41,6 +41,7 @@ demand_clean.R file: cleaning the energy demand data and creating data subsets
 demand_model.R file: creating linear regression models to predict energy demand and assessing those models
 - Input: demand_balancing_authority list
 - Output: Five results.rds files (one for each balancing authority) that contain demand time series plots, linear regression models predicting demand, metric accessing model performance, and plots accessing model performance. These .rds files get saved into the output folder in the Github repository sam-b branch.
+- Note: The California balancing authority .rds files are already in the output folder!
 
 run_all_demand.R: THE ONLY .R FILE THAT NEEDS TO BE RUN FOR THE DEMAND PORTION OF THIS PROJECT
 - Run the code in this .R file only. It contains R code that will run the previously described .R programs for you.
