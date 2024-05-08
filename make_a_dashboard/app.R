@@ -89,7 +89,7 @@ ui <- dashboardPage(
                         markdown("# **Research Questions:**")
                       ),
                       card_body(
-                        markdown("### 1. Can a *two-dimensional risk model*, which predicts future energy grid demand and the timing of potential wildfires for a chosen region, help improve our understanding of energy grid reliability for that region?
+                        markdown("### 1. Can a *2-dimensional risk model*, which predicts future energy grid demand and the timing of potential wildfires for a chosen region, help improve our understanding of energy grid reliability for that region?
                                  ### 2. Can energy grid demand for the chosen region be predicted one year into the future using the region’s historical balancing authority energy grid demand data?
                                  ### 3. Can wildfires in the region be predicted one year into the future using the region’s historical wildfire and weather data?")
                       )
@@ -114,7 +114,7 @@ ui <- dashboardPage(
                         markdown("# **Added Business Value:**")
                       ),
                       card_body(
-                        markdown("## Understanding Future Energy Grid Reliability
+                        markdown("## Understanding Future Energy Grid Reliability with a *2-Dimensional Risk Model*
                                   - #### Proper resource allocation
                                   - #### Prevent blackouts
                                   - #### Infrastructure management
