@@ -9,7 +9,7 @@ Obtaining Data
 - <img width="1440" alt="Screenshot 2024-05-06 at 12 00 52 PM" src="https://github.com/SamBa61/STAT190/assets/91347135/a1cc6174-d7b7-4d06-98d4-b46d5cde7baf">
 - <img width="1440" alt="Screenshot 2024-05-06 at 12 02 06 PM" src="https://github.com/SamBa61/STAT190/assets/91347135/1dc1ea5c-eb54-4e95-b9b5-bd3f5951f853">
 - Save all these .csv files into a folder named data_raw in the Github repository located in the sam-b branch
-- Note: the files above are already in the data_raw folder
+- Note: the files above are already in the data_raw folder, renamed with conventions for year and 1 (Jan-June) or 2 (July-Dec)
 
 R and RStudio set-up for running the demand code
 - RStudio Version: RStudio 2023.12.0+369 "Ocean Storm" Release (33206f75bd14d07d84753f965eaa24756eda97b7, 2023-12-17) for macOS. Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) RStudio/2023.12.0+369 Chrome/116.0.5845.190 Electron/26.2.4 Safari/537.36
