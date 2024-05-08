@@ -6,7 +6,7 @@ Research Questions:
 
 # Energy Demand (sam-b branch)
 Obtaining Data
-- Go to data source: https://www.eia.gov/electricity/gridmonitor/dashboard/electric_ overview/US48/US48
+- Go to data source: https://www.eia.gov/electricity/gridmonitor/dashboard/electric_overview/US48/US48
 - Click “Download Data”
 - <img width="1440" alt="Screenshot 2024-05-06 at 11 50 30 AM" src="https://github.com/SamBa61/STAT190/assets/91347135/06d5cbc0-3e6d-4251-a362-07a643d7b9dd">
 - Select “Six-Month Files”
