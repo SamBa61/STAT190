@@ -30,6 +30,7 @@ R and RStudio set-up for running the demand code
 Note: DO NOT RUN OR CHANGE ANY OF THE BELOW FILES
 
 demand_pull_raw.R file: pulling the raw energy demand .csv files into RStudio
+- Note: after having uploaded the energy demand .csv files, you need to pull these repository changes into your local repository in RStudio to access them.
 - Input: .csv files that were uploaded into the data_raw folder in the Github repository sam-b branch
 - Output: demand_all_data dataframe, which contains all of the energy demand .csv file data combined together
 
@@ -40,7 +41,7 @@ demand_clean.R file: cleaning the energy demand data and creating data subsets
 
 demand_model.R file: creating linear regression models to predict energy demand and assessing those models
 - Input: demand_balancing_authority list
-- Output: Five results.rds files (one for each balancing authority) that contain demand time series plots, linear regression models predicting demand, metric accessing model performance, and plots accessing model performance. These .rds files get saved into the output folder in the Github repository sam-b branch.
+- Output: Five results.rds files (one for each balancing authority) that contain demand time series plots, linear regression models predicting demand, metric accessing model performance, and plots accessing model performance. These .rds files get saved into the output folder in the Github repository sam-b branch when you commit and push the file changes.
 - Note: The California balancing authority .rds files are already in the output folder!
 
 run_all_demand.R: THE ONLY .R FILE THAT NEEDS TO BE RUN FOR THE DEMAND PORTION OF THIS PROJECT
