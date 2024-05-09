@@ -9,7 +9,7 @@ Obtaining Data
 - <img width="1440" alt="Screenshot 2024-05-06 at 12 00 52 PM" src="https://github.com/SamBa61/STAT190/assets/91347135/a1cc6174-d7b7-4d06-98d4-b46d5cde7baf">
 - <img width="1440" alt="Screenshot 2024-05-06 at 12 02 06 PM" src="https://github.com/SamBa61/STAT190/assets/91347135/1dc1ea5c-eb54-4e95-b9b5-bd3f5951f853">
 - Save all these .csv files into a folder named data_raw in the Github repository located in the sam-b branch
-- Note: the files above are already in the data_raw folder, renamed with conventions for year and 1 (Jan-June) or 2 (July-Dec)
+- Note: the files above are already in the data_raw folder, renamed with conventions for year and 1 (Jan-June) or 2 (July-Dec).
 
 R and RStudio set-up for running the demand code
 - RStudio Version: RStudio 2023.12.0+369 "Ocean Storm" Release (33206f75bd14d07d84753f965eaa24756eda97b7, 2023-12-17) for macOS. Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) RStudio/2023.12.0+369 Chrome/116.0.5845.190 Electron/26.2.4 Safari/537.36
@@ -24,6 +24,7 @@ R and RStudio set-up for running the demand code
 Note: DO NOT RUN OR CHANGE ANY OF THE BELOW FILES
 
 demand_pull_raw.R file: pulling the raw energy demand .csv files into RStudio
+- Note: after having uploaded the energy demand .csv files, you need to pull these repository changes into your local repository in RStudio to access them.
 - Input: .csv files that were uploaded into the data_raw folder in the Github repository sam-b branch
 - Output: demand_all_data dataframe, which contains all of the energy demand .csv file data combined together
 
@@ -34,7 +35,7 @@ demand_clean.R file: cleaning the energy demand data and creating data subsets
 
 demand_model.R file: creating linear regression models to predict energy demand and assessing those models
 - Input: demand_balancing_authority list
-- Output: Five results.rds files (one for each balancing authority) that contain demand time series plots, linear regression models predicting demand, metric accessing model performance, and plots accessing model performance. These .rds files get saved into the output folder in the Github repository sam-b branch.
+- Output: Five results.rds files (one for each balancing authority) that contain demand time series plots, linear regression models predicting demand, metric accessing model performance, and plots accessing model performance. These .rds files get saved into the output folder in the Github repository sam-b branch when you commit and push the file changes.
 - Note: The California balancing authority .rds files are already in the output folder!
 
 run_all_demand.R: THE ONLY .R FILE THAT NEEDS TO BE RUN FOR THE DEMAND PORTION OF THIS PROJECT
